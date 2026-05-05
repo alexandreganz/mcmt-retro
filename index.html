@@ -1563,19 +1563,23 @@ function closeEndVoyage() {
   document.getElementById('end-modal').classList.remove('open');
 }
 
+let _exportTime = null;
+
 function saveToObsidian() {
   const btn = document.getElementById('modal-save-btn');
+  const cancelBtn = document.getElementById('modal-cancel-btn');
   const progress = document.getElementById('modal-progress');
   btn.disabled = true;
   btn.textContent = '⏳ Saving...';
+  cancelBtn.style.display = 'none';
   progress.classList.add('show');
-  progress.textContent = "\u2693 Preparing the Captain\u2019s log...";
+  progress.textContent = '⏳ Sending notes to Firebase...';
 
-  // Build the export payload and store it so the CLI agent can pick it up
   const all = allNotes();
+  _exportTime = new Date().toISOString();
   const payload = {
     sprint: SPRINT,
-    exportedAt: new Date().toISOString(),
+    exportedAt: _exportTime,
     exportedBy: currentUser(),
     notes: {},
     issues: ISSUES,
@@ -1583,16 +1587,33 @@ function saveToObsidian() {
   };
   COLS.forEach(c => { payload.notes[c.id] = _cache[c.id] || []; });
 
-  // Save to Firebase under a special export key so the CLI can read it
   db.ref(RETRO_PATH + '/export').set(payload).then(() => {
-    progress.textContent = '✅ Notes saved! Tell yer Captain (Copilot): "save to obsidian"';
-    btn.textContent = '✅ Saved!';
-    btn.style.background = 'linear-gradient(135deg, #2d7a3a, #27ae60)';
-    toast('⚓ Voyage complete! Notes ready for Obsidian.');
+    progress.textContent = '⏳ Waiting for Obsidian Bridge to pick it up...';
+    // Listen for the bridge confirmation
+    db.ref(RETRO_PATH + '/export/obsidianSaved').on('value', snap => {
+      const saved = snap.val();
+      if (saved && saved.at === _exportTime) {
+        db.ref(RETRO_PATH + '/export/obsidianSaved').off();
+        progress.innerHTML = '✅ Saved to Obsidian! <br><span style="font-size:12px;color:var(--text-muted);">📁 ' + saved.path + '</span>';
+        btn.textContent = '✅ Voyage Complete!';
+        btn.style.background = 'linear-gradient(135deg, #2d7a3a, #27ae60)';
+        toast('⚓ Notes saved to Obsidian!');
+      }
+    });
+    // Timeout after 30s
+    setTimeout(() => {
+      if (btn.textContent === '⏳ Saving...') {
+        progress.textContent = '⚠️ Bridge not responding. Is obsidian_bridge.py running?';
+        btn.disabled = false;
+        btn.textContent = '🔄 Retry';
+        cancelBtn.style.display = '';
+      }
+    }, 30000);
   }).catch(err => {
     progress.textContent = '❌ Error: ' + err.message;
     btn.disabled = false;
-    btn.textContent = "\uD83E\uDEA8 Save to Captain\u2019s Log";
+    btn.textContent = '🔄 Retry';
+    cancelBtn.style.display = '';
   });
 }
 
@@ -1628,7 +1649,7 @@ function toast(msg) {
     </div>
     <div class="modal-stats" id="modal-stats"></div>
     <div class="modal-actions">
-      <button class="modal-cancel" onclick="closeEndVoyage()">Keep Sailing</button>
+      <button class="modal-cancel" id="modal-cancel-btn" onclick="closeEndVoyage()">Keep Sailing</button>
       <button class="modal-confirm" id="modal-save-btn" onclick="saveToObsidian()">🪨 Save to Captain's Log</button>
     </div>
     <div class="modal-progress" id="modal-progress">⏳ Saving to Obsidian...</div>
