@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏴‍☠️ MCMT Sprint Retro — Sprint 46</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f5efe6;
+    --surface: #fff9f0;
+    --card: #fffdf8;
+    --border: #d4c4a8;
+    --border-light: #e8dcc6;
+    --text: #2c1810;
+    --text-muted: #7a6b55;
+    --gold: #b8860b;
+    --gold-light: #daa520;
+    --gold-bg: rgba(184,134,11,0.06);
+    --green: #2d8a4e;
+    --green-bg: rgba(45,138,78,0.08);
+    --red: #c0392b;
+    --red-bg: rgba(192,57,43,0.08);
+    --blue: #2874a6;
+    --blue-bg: rgba(40,116,166,0.08);
+    --purple: #7d3c98;
+    --purple-bg: rgba(125,60,152,0.08);
+    --orange: #d35400;
+    --shadow: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ═══ WELCOME SCREEN ═══ */
+  .welcome-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px;
+  }
+  .welcome-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 48px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .welcome-card .ship { font-size: 72px; margin-bottom: 16px; }
+  .welcome-card h1 {
+    font-family: 'Pirata One', cursive;
+    font-size: 36px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .welcome-card .tagline {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+  .welcome-card label {
+    display: block;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .welcome-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 18px;
+    text-align: center;
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+    margin-bottom: 24px;
+  }
+  .welcome-input:focus { border-color: var(--gold); }
+  .welcome-input::placeholder { color: var(--border); }
+  .board-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Pirata One', cursive;
+    font-size: 22px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: var(--shadow);
+  }
+  .board-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .board-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .sprint-info {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-light);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .sprint-info strong { color: var(--text); }
+
+  /* ═══ MAIN APP (hidden until login) ═══ */
+  .app { display: none; }
+  .app.active { display: block; }
+
+  /* ═══ TOP BAR ═══ */
+  .topbar {
+    background: linear-gradient(135deg, #d4b896, #e6d5bd, #ddc9a8);
+    border-bottom: 3px solid var(--gold);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .topbar h1 {
+    font-family: 'Pirata One', cursive;
+    font-size: 28px;
+    color: var(--gold);
+  }
+  .topbar .sprint-tag {
+    background: var(--gold);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .pirate-name-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gold-bg);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .topbar-btn {
+    padding: 7px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .topbar-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* ═══ VIEW TABS ═══ */
+  .view-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+  }
+  .view-tab {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .view-tab.active {
+    background: var(--gold);
+    color: #fff;
+    font-weight: 600;
+  }
+  .view-tab:not(.active):hover { background: var(--gold-bg); color: var(--gold); }
+
+  /* ═══ SPRINT SUMMARY ═══ */
+  .sprint-bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .sprint-bar strong { color: var(--text); }
+  .sprint-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .stat-dot.done { background: var(--green); }
+  .stat-dot.progress { background: var(--orange); }
+  .stat-dot.todo { background: var(--border); }
+
+  /* ═══ RETRO BOARD VIEW ═══ */
+  .retro-view { padding: 24px 32px; }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    min-height: 400px;
+  }
+  @media (max-width: 1200px) { .board { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 768px) { .board { grid-template-columns: 1fr; } }
+
+  .retro-col {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .col-head {
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .col-emoji { font-size: 24px; }
+  .col-info { flex: 1; }
+  .col-info h3 {
+    font-family: 'Pirata One', cursive;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+  .col-info .col-sub { font-size: 11px; color: var(--text-muted); }
+  .col-count {
+    background: var(--border);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Column accent colors */
+  .col-fruits .col-head { border-bottom: 3px solid var(--green); }
+  .col-fruits .col-info h3 { color: var(--green); }
+  .col-fruits .col-count { background: var(--green); }
+  .col-claire .col-head { border-bottom: 3px solid var(--blue); }
+  .col-claire .col-info h3 { color: var(--blue); }
+  .col-claire .col-count { background: var(--blue); }
+  .col-gold .col-head { border-bottom: 3px solid var(--gold); }
+  .col-gold .col-info h3 { color: var(--gold); }
+  .col-gold .col-count { background: var(--gold); }
+  .col-pirates .col-head { border-bottom: 3px solid var(--red); }
+  .col-pirates .col-info h3 { color: var(--red); }
+  .col-pirates .col-count { background: var(--red); }
+  .col-bottle .col-head { border-bottom: 3px solid var(--purple); }
+  .col-bottle .col-info h3 { color: var(--purple); }
+  .col-bottle .col-count { background: var(--purple); }
+
+  /* ═══ NOTES ═══ */
+  .notes-scroll {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 520px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .note {
+    border-radius: 8px;
+    padding: 10px 12px;
+    position: relative;
+    border: 1px solid var(--border-light);
+  }
+  .col-fruits .note { background: var(--green-bg); border-left: 3px solid var(--green); }
+  .col-claire .note { background: var(--blue-bg); border-left: 3px solid var(--blue); }
+  .col-gold .note { background: var(--gold-bg); border-left: 3px solid var(--gold); }
+  .col-pirates .note { background: var(--red-bg); border-left: 3px solid var(--red); }
+  .col-bottle .note { background: var(--purple-bg); border-left: 3px solid var(--purple); }
+  .note-body { font-size: 13px; line-height: 1.5; word-wrap: break-word; }
+  .note-linked {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    padding: 2px 8px;
+    background: var(--gold-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .note-linked a { color: var(--blue); text-decoration: none; }
+  .note-linked a:hover { text-decoration: underline; }
+  .note-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .note-actions { display: flex; gap: 6px; }
+  .n-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  .n-btn:hover { background: var(--border-light); }
+  .n-btn.voted { color: var(--gold); font-weight: 600; }
+  .n-btn.del:hover { color: var(--red); }
+  .empty-col {
+    text-align: center;
+    padding: 20px 8px;
+    color: var(--border);
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  /* Add note */
+  .add-area { padding: 10px 12px; border-top: 1px solid var(--border-light); }
+  .add-trigger {
+    width: 100%;
+    padding: 8px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .add-trigger:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-bg); }
+  .add-form { display: none; }
+  .add-form.open { display: block; }
+  .add-form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 50px;
+    outline: none;
+  }
+  .add-form textarea:focus { border-color: var(--gold); }
+  .add-form select {
+    width: 100%;
+    margin-top: 6px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+  }
+  .add-form select:focus { border-color: var(--gold); }
+  .form-row { display: flex; gap: 6px; margin-top: 6px; }
+  .save-btn {
+    padding: 6px 14px;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .save-btn:hover { background: var(--gold-light); }
+  .cancel-btn {
+    padding: 6px 14px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .cancel-btn:hover { border-color: var(--text-muted); }
+
+  /* ═══ PLAN VIEW ═══ */
+  .plan-view { display: none; padding: 24px 32px; }
+  .plan-view.active { display: block; }
+  .retro-view.active { display: block; }
+  .retro-view { display: none; }
+
+  .plan-section {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .plan-section-head {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+  }
+  .plan-section-head:hover { background: var(--gold-bg); }
+  .plan-section-head h3 {
+    font-family: 'Pirata One', cursive;
+    font-size: 20px;
+    flex: 1;
+  }
+  .plan-count {
+    background: var(--gold);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 12px;
+  }
+  .plan-section-body { padding: 16px 20px; }
+  .plan-story {
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .plan-story-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--gold-bg);
+    font-size: 13px;
+  }
+  .plan-story-head a { color: var(--blue); text-decoration: none; font-weight: 600; }
+  .plan-story-head a:hover { text-decoration: underline; }
+  .plan-story-notes { padding: 10px 14px; }
+  .plan-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+  }
+  .plan-note:last-child { border-bottom: none; }
+  .plan-note-col {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .plan-note-col.fruits { background: var(--green-bg); color: var(--green); }
+  .plan-note-col.claire { background: var(--blue-bg); color: var(--blue); }
+  .plan-note-col.gold { background: var(--gold-bg); color: var(--gold); }
+  .plan-note-col.pirates { background: var(--red-bg); color: var(--red); }
+  .plan-note-col.bottle { background: var(--purple-bg); color: var(--purple); }
+
+  /* Unlinked notes */
+  .unlinked-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .unlinked-note select {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    font-family: inherit;
+    background: var(--card);
+    outline: none;
+    min-width: 180px;
+  }
+  .link-btn {
+    padding: 4px 10px;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* Action items */
+  .action-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: var(--purple-bg);
+    border-left: 3px solid var(--purple);
+  }
+  .action-item .action-text { flex: 1; font-size: 13px; }
+  .action-item .action-author { font-size: 11px; color: var(--text-muted); }
+  .jira-push-btn {
+    padding: 6px 12px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .jira-push-btn:hover { opacity: 0.9; }
+  .jira-push-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ═══ FOOTER ═══ */
+  .footer {
+    text-align: center;
+    padding: 20px 32px;
+    color: var(--text-muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border-light);
+  }
+  .footer .quote {
+    font-family: 'Pirata One', cursive;
+    font-size: 15px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  /* ═══ TOAST ═══ */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 10px 18px;
+    color: var(--gold);
+    font-size: 13px;
+    display: none;
+    z-index: 1000;
+    box-shadow: var(--shadow-lg);
+  }
+  .toast.show { display: flex; align-items: center; gap: 6px; }
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<!-- ═══════════ WELCOME SCREEN ═══════════ -->
+<div class="welcome-screen" id="welcome">
+  <div class="welcome-card">
+    <div class="ship">🏴‍☠️</div>
+    <h1>Ahoy, Sailor!</h1>
+    <p class="tagline">Welcome aboard the Sprint Retro. Who be ye?</p>
+    <label for="pirate-name">Your pirate name</label>
+    <input class="welcome-input" id="pirate-name" type="text"
+           placeholder="e.g. Captain Alex"
+           autofocus
+           onkeydown="if(event.key==='Enter') boardShip()">
+    <button class="board-btn" onclick="boardShip()" id="board-btn">⚓ Board the Ship</button>
+    <div class="sprint-info">
+      <div>🗺️ <strong>Sprint 46</strong> — MCM · 28 Apr – 07 May 2026</div>
+      <div style="margin-top:4px;">🎯 Captain's Orders: <strong>Release the BU Packs!</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN APP ═══════════ -->
+<div class="app" id="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>🏴‍☠️ Sprint Retro</h1>
+      <span class="sprint-tag">Sprint 46</span>
+      <div class="view-tabs">
+        <button class="view-tab active" id="tab-retro" onclick="switchView('retro')">⚓ Retro Board</button>
+        <button class="view-tab" id="tab-plan" onclick="switchView('plan')">🗺️ Plan the Voyage</button>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="pirate-name-badge">🏴‍☠️ <span id="display-name"></span></div>
+      <button class="topbar-btn" onclick="exportAll()">📥 Export</button>
+      <button class="topbar-btn" onclick="copyForObsidian()" style="background:var(--purple);color:#fff;">🪨 Obsidian</button>
+      <button class="topbar-btn" onclick="changeName()">✏️ Name</button>
+    </div>
+  </div>
+
+  <!-- SPRINT BAR -->
+  <div class="sprint-bar">
+    <span>🎯 <strong>Release the BU Packs!</strong></span>
+    <span class="sprint-stat"><span class="stat-dot done"></span> Done: <strong id="bar-done">0</strong></span>
+    <span class="sprint-stat"><span class="stat-dot progress"></span> In Progress: <strong id="bar-ip">0</strong></span>
+    <span class="sprint-stat"><span class="stat-dot todo"></span> To Do: <strong id="bar-todo">50</strong></span>
+    <span style="margin-left:auto;">28 Apr – 07 May 2026</span>
+  </div>
+
+  <!-- ═══════════ RETRO BOARD VIEW ═══════════ -->
+  <div class="retro-view active" id="view-retro">
+    <div class="board" id="board"></div>
+  </div>
+
+  <!-- ═══════════ PLAN VIEW ═══════════ -->
+  <div class="plan-view" id="view-plan">
+    <div id="plan-content"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="quote">"Not all treasure is silver and gold, mate."</div>
+    <div>🏴‍☠️ MCMT Sprint Retro · Sprint 46 · Powered by Jira MCP + Pirate Magic</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════ */
+const SPRINT = {
+  id: 34873, name: "Sprint 46", project: "MCMT",
+  goal: "Release the BU Packs!",
+  start: "2026-04-28", end: "2026-05-07",
+  jira: "https://legogroup.atlassian.net/browse/"
+};
+
+const ISSUES = [{"key": "MCMT-2467", "summary": "Push update of MCCM DLs to all owners in MCCM", "status": "Done", "statusCategory": "Done", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1382"}, {"key": "MCMT-2324", "summary": "Phase II follow-up with MCCM LT - list of team drivers for next steps", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1383"}, {"key": "MCMT-1387", "summary": "Draft Campaign Framework & RACI Onboarding Pack", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1383"}, {"key": "MCMT-2015", "summary": "Plan and review remaining modalities and align on programme end time", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1389"}, {"key": "MCMT-1452", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1451", "summary": "Support teams during migration window", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1449", "summary": "Communicate migration process", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1448", "summary": "Review current library status per team", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1462", "summary": "Share toolkit with People Leaders and track distribution", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1458"}, {"key": "MCMT-1460", "summary": "Phase 1: Private Guide", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1458"}, {"key": "MCMT-1459", "summary": "Draft comms copy", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1458"}, {"key": "MCMT-1467", "summary": "Follow up with each team to confirm their page is updated and contains relevant, current information", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1466", "summary": "Add/update key resources, links, and team-specific content", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1465", "summary": "Define structure and formatting standards for all team pages", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1464", "summary": "Review current state of each team page post-Tuna", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1574", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1573", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1572", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1571", "summary": "Review current library status per team", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1456", "summary": "Decommission or redirect old links if needed", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1595", "summary": "Decommission or redirect old links if needed", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1579", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1578", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1577", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1576", "summary": "Review current library status per team", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1584", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1583", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1582", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1581", "summary": "Review current library status per team", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1594", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-1593", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-1592", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-1591", "summary": "Review current library status per team", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-2469", "summary": "Reconnect Camilla and align on rest of year", "status": "Done", "statusCategory": "Done", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1649"}, {"key": "MCMT-2436", "summary": "Present MCCM onboarding deck", "status": "In Progress", "statusCategory": "In Progress", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1696"}, {"key": "MCMT-1590", "summary": "MCCM Private Team Corner Structure and Migration \u2013 MGs", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1580", "summary": "MCCM Private Team Corner Structure and Migration \u2013 GMA", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1575", "summary": "MCCM Private Team Corner Structure and Migration \u2013 M&P", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1570", "summary": "MCCM Private Team Corner Structure and Migration \u2013 MDIP", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1458", "summary": "Private SharePoint Comms for People Leaders", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1447", "summary": "MCCM Private Team Corner Structure and Migration \u2013 TSM", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1463", "summary": "MCCM Public Team Page Update - G&E", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1913"}, {"key": "MCMT-2478", "summary": "Send out 1 day to go email with ooo", "status": "Done", "statusCategory": "Done", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1981", "summary": "Ea: Host Retrospective ", "status": "Done", "statusCategory": "Done", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1972", "summary": "Send out post-LD comms with Feedback Loop", "status": "Done", "statusCategory": "Done", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1971", "summary": "Execute Learning Day with Janne (Ea ooo)", "status": "Done", "statusCategory": "Done", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1976", "summary": "Send out e-mail", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}, {"key": "MCMT-1975", "summary": "Add post-session links/resources", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}, {"key": "MCMT-1974", "summary": "Upload recordings + transcripts", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}, {"key": "MCMT-1973", "summary": "Launch post-Learning Day survey using Microsoft Forms", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}];
+
+const EPICS = {"MCMT-1382": "MCCM SharePoint V2 \u2013 Governance, Enablement & Comms", "MCMT-1383": "Update and deploy Campaign RACI", "MCMT-1389": "Kick the CAN", "MCMT-1447": "MCCM Private Team Corner Structure and Migration \u2013 TSM", "MCMT-1458": "Private SharePoint Comms for People Leaders", "MCMT-1463": "MCCM Public Team Page Update - G&E", "MCMT-1570": "MCCM Private Team Corner Structure and Migration \u2013 MDIP", "MCMT-1575": "MCCM Private Team Corner Structure and Migration \u2013 M&P", "MCMT-1580": "MCCM Private Team Corner Structure and Migration \u2013 GMA", "MCMT-1590": "MCCM Private Team Corner Structure and Migration \u2013 MGs", "MCMT-1649": "Calendar Generation at country level - Data Model", "MCMT-1696": "MCCM Onboarding Experience", "MCMT-1912": "MCCM SharePoint V2 \u2013 Private Collaboration Spaces", "MCMT-1913": "MCCM SharePoint V2 \u2013 Public Pages", "MCMT-1957": "Learning Day April 29", "MCMT-1972": "Send out post-LD comms with Feedback Loop"};
+
+function storyOptions() {
+  let html = '<option value="">🔗 Link to a quest (optional)</option>';
+  const grouped = {};
+  ISSUES.forEach(i => { const ek = i.epicKey || '__none__'; if (!grouped[ek]) grouped[ek] = []; grouped[ek].push(i); });
+  Object.keys(EPICS).forEach(ek => {
+    if (!grouped[ek]) return;
+    const label = EPICS[ek].length > 55 ? EPICS[ek].substring(0,55)+'…' : EPICS[ek];
+    html += '<optgroup label="🎯 '+esc(label)+'">';
+    grouped[ek].forEach(i => { html += '<option value="'+i.key+'">'+i.key+' — '+esc(i.summary).substring(0,55)+'</option>'; });
+    html += '</optgroup>';
+  });
+  if (grouped['__none__']) {
+    html += '<optgroup label="No Epic">';
+    grouped['__none__'].forEach(i => { html += '<option value="'+i.key+'">'+i.key+' — '+esc(i.summary).substring(0,55)+'</option>'; });
+    html += '</optgroup>';
+  }
+  return html;
+}
+
+function planStoryOptions() {
+  let html = '<option value="">Link to quest...</option>';
+  const grouped = {};
+  ISSUES.forEach(i => { const ek = i.epicKey || '__none__'; if (!grouped[ek]) grouped[ek] = []; grouped[ek].push(i); });
+  Object.keys(EPICS).forEach(ek => {
+    if (!grouped[ek]) return;
+    const label = EPICS[ek].length > 45 ? EPICS[ek].substring(0,45)+'…' : EPICS[ek];
+    html += '<optgroup label="🎯 '+esc(label)+'">';
+    grouped[ek].forEach(i => { html += '<option value="'+i.key+'">'+i.key+' — '+esc(i.summary).substring(0,45)+'</option>'; });
+    html += '</optgroup>';
+  });
+  if (grouped['__none__']) {
+    html += '<optgroup label="No Epic">';
+    grouped['__none__'].forEach(i => { html += '<option value="'+i.key+'">'+i.key+' — '+esc(i.summary).substring(0,45)+'</option>'; });
+    html += '</optgroup>';
+  }
+  return html;
+}
+
+const COLS = [
+  { id: 'fruits',  emoji: '🍎', name: 'Sweet Fruits',         sub: 'What went well, matey?',    btn: '+ Add a sweet fruit' },
+  { id: 'claire',  emoji: '🗣️', name: 'Discuss with Claire',  sub: 'Topics for the Captain\'s table', btn: '+ Raise a topic' },
+  { id: 'gold',    emoji: '💰', name: 'Hidden Gold',           sub: 'Shout out to yer crew!',    btn: '+ Give a shout-out' },
+  { id: 'pirates', emoji: '🏴‍☠️', name: 'Pirates on the Shore', sub: 'What didn\'t go well?',   btn: '+ Report a storm' },
+  { id: 'bottle',  emoji: '🍾', name: 'Message in a Bottle',   sub: 'Action points for the future', btn: '+ Cast a message' }
+];
+
+/* ═══════════════════════════════════════════
+   FIREBASE CONFIG
+   ═══════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDzpJczpt3NanKIv3gpScUmvzm_YbTi2ck",
+  authDomain: "mcmt-retro.firebaseapp.com",
+  databaseURL: "https://mcmt-retro-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mcmt-retro",
+  storageBucket: "mcmt-retro.firebasestorage.app",
+  messagingSenderId: "211633568071",
+  appId: "1:211633568071:web:59096219536064690bf462"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const RETRO_PATH = 'retros/sprint-46';
+
+/* ═══════════════════════════════════════════
+   STATE (Firebase-backed with local cache)
+   ═══════════════════════════════════════════ */
+const NAME_KEY = 'mcmt-retro-pirate-name';
+let _cache = {};   // local mirror of Firebase data
+let _ready = false; // true once first Firebase snapshot arrives
+
+function load() { return _cache; }
+function getNotes(col) { return (_cache[col] || []); }
+function allNotes() { let all = []; COLS.forEach(c => (_cache[c.id]||[]).forEach(n => all.push({...n, col: c.id}))); return all; }
+
+// Real-time listener — syncs all users
+db.ref(RETRO_PATH + '/notes').on('value', snap => {
+  _cache = snap.val() || {};
+  _ready = true;
+  if (document.getElementById('app').classList.contains('active')) {
+    renderBoard();
+    if (document.getElementById('view-plan').classList.contains('active')) renderPlan();
+  }
+});
+
+function addNoteData(col, text, linkedKey) {
+  const noteId = Date.now().toString(36) + Math.random().toString(36).substr(2,4);
+  const note = {
+    id: noteId, text, author: currentUser(),
+    linkedKey: linkedKey || null,
+    timestamp: new Date().toISOString(),
+    votes: 0, voters: {}
+  };
+  // Push into the column array — use transaction to avoid overwrites
+  db.ref(RETRO_PATH + '/notes/' + col).transaction(arr => {
+    if (!arr) arr = [];
+    arr.push(note);
+    return arr;
+  });
+}
+
+function deleteNoteData(col, nid) {
+  db.ref(RETRO_PATH + '/notes/' + col).transaction(arr => {
+    if (!arr) return arr;
+    return arr.filter(n => n && n.id !== nid);
+  });
+}
+
+function voteNote(col, nid) {
+  const me = currentUser();
+  db.ref(RETRO_PATH + '/notes/' + col).transaction(arr => {
+    if (!arr) return arr;
+    return arr.map(n => {
+      if (!n || n.id !== nid) return n;
+      const voters = n.voters || {};
+      if (voters[me.replace(/[.#$/\[\]]/g, '_')]) {
+        delete voters[me.replace(/[.#$/\[\]]/g, '_')];
+        n.votes = Math.max(0, (n.votes||0) - 1);
+      } else {
+        voters[me.replace(/[.#$/\[\]]/g, '_')] = true;
+        n.votes = (n.votes||0) + 1;
+      }
+      n.voters = voters;
+      return n;
+    });
+  });
+}
+
+function linkNote(col, nid, key) {
+  db.ref(RETRO_PATH + '/notes/' + col).transaction(arr => {
+    if (!arr) return arr;
+    return arr.map(n => {
+      if (!n || n.id !== nid) return n;
+      n.linkedKey = key || null;
+      return n;
+    });
+  });
+}
+
+function currentUser() { return localStorage.getItem(NAME_KEY) || 'Anonymous Pirate'; }
+
+/* ═══════════════════════════════════════════
+   ONLINE PRESENCE
+   ═══════════════════════════════════════════ */
+function setupPresence() {
+  const me = currentUser().replace(/[.#$/\[\]]/g, '_');
+  const ref = db.ref(RETRO_PATH + '/crew/' + me);
+  ref.set({ name: currentUser(), joined: new Date().toISOString() });
+  ref.onDisconnect().remove();
+}
+
+db.ref(RETRO_PATH + '/crew').on('value', snap => {
+  const crew = snap.val() || {};
+  const names = Object.values(crew).map(c => c.name);
+  const el = document.getElementById('crew-online');
+  if (el) {
+    el.innerHTML = '🏴‍☠️ <strong>' + names.length + '</strong> pirate' + (names.length!==1?'s':'') + ' aboard: ' + names.map(n => '<span style="color:var(--gold)">' + esc(n) + '</span>').join(', ');
+  }
+});
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+/* ═══════════════════════════════════════════
+   WELCOME
+   ═══════════════════════════════════════════ */
+function boardShip() {
+  const name = document.getElementById('pirate-name').value.trim();
+  if (!name) { document.getElementById('pirate-name').focus(); return; }
+  localStorage.setItem(NAME_KEY, name);
+  showApp();
+}
+
+function showApp() {
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('display-name').textContent = currentUser();
+  setupPresence();
+  updateKPIs();
+  // Board renders automatically via Firebase listener; fallback if already cached:
+  if (_ready) renderBoard();
+}
+
+function changeName() {
+  const name = prompt('Change yer pirate name, sailor:', currentUser());
+  if (name && name.trim()) {
+    // Remove old presence
+    const oldKey = currentUser().replace(/[.#$/\[\]]/g, '_');
+    db.ref(RETRO_PATH + '/crew/' + oldKey).remove();
+    localStorage.setItem(NAME_KEY, name.trim());
+    document.getElementById('display-name').textContent = name.trim();
+    setupPresence();
+    toast('🏴‍☠️ Name updated!');
+  }
+}
+
+// Auto-login if name exists
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem(NAME_KEY)) showApp();
+});
+
+/* ═══════════════════════════════════════════
+   BOARD RENDERING
+   ═══════════════════════════════════════════ */
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = COLS.map(c => {
+    const notes = getNotes(c.id);
+    return `<div class="retro-col col-${c.id}">
+      <div class="col-head">
+        <span class="col-emoji">${c.emoji}</span>
+        <div class="col-info">
+          <h3>${c.name}</h3>
+          <div class="col-sub">${c.sub}</div>
+        </div>
+        <span class="col-count">${notes.length}</span>
+      </div>
+      <div class="notes-scroll">${renderNotes(c.id, notes)}</div>
+      <div class="add-area">
+        <button class="add-trigger" onclick="openForm('${c.id}')" id="trigger-${c.id}">${c.btn}</button>
+        <div class="add-form" id="form-${c.id}">
+          <textarea placeholder="Share your thoughts..." id="text-${c.id}"
+                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitNote('${c.id}');}"></textarea>
+          <select id="link-${c.id}">
+            ${storyOptions()}
+          </select>
+          <div class="form-row">
+            <button class="save-btn" onclick="submitNote('${c.id}')">${c.emoji} Add</button>
+            <button class="cancel-btn" onclick="closeForm('${c.id}')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderNotes(col, notes) {
+  if (!notes.length) {
+    const msgs = { fruits:'No fruits harvested yet...', claire:'No topics raised yet...', gold:'No gold discovered yet...', pirates:'No storms reported yet...', bottle:'No messages cast yet...' };
+    return `<div class="empty-col">${msgs[col]}</div>`;
+  }
+  return notes.map(n => {
+    const linked = n.linkedKey ? ISSUES.find(i => i.key === n.linkedKey) : null;
+    return `<div class="note">
+      <div class="note-body">${esc(n.text)}</div>
+      ${linked ? `<div class="note-linked">🔗 <a href="${SPRINT.jira}${linked.key}" target="_blank">${linked.key}</a> ${esc(linked.summary).substring(0,40)}</div>` : ''}
+      <div class="note-foot">
+        <span>🏴‍☠️ ${esc(n.author)}</span>
+        <div class="note-actions">
+          <button class="n-btn ${(n.voters && n.voters[currentUser().replace(/[.#$/\[\]]/g,'_')])?'voted':''}" onclick="doVote('${col}','${n.id}')">👍 ${n.votes||0}</button>
+          <button class="n-btn del" onclick="doDelete('${col}','${n.id}')">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   INTERACTIONS
+   ═══════════════════════════════════════════ */
+function openForm(col) {
+  document.getElementById(`form-${col}`).classList.add('open');
+  document.getElementById(`trigger-${col}`).style.display = 'none';
+  document.getElementById(`text-${col}`).focus();
+}
+function closeForm(col) {
+  document.getElementById(`form-${col}`).classList.remove('open');
+  document.getElementById(`trigger-${col}`).style.display = '';
+  document.getElementById(`text-${col}`).value = '';
+  document.getElementById(`link-${col}`).value = '';
+}
+function submitNote(col) {
+  const text = document.getElementById(`text-${col}`).value.trim();
+  if (!text) return;
+  const linkedKey = document.getElementById(`link-${col}`).value;
+  addNoteData(col, text, linkedKey);
+  closeForm(col);
+  renderBoard();
+  toast('🏴‍☠️ Note added!');
+}
+function doVote(col, nid) { voteNote(col, nid); renderBoard(); }
+function doDelete(col, nid) {
+  if (confirm('Walk the plank? 💀')) { deleteNoteData(col, nid); renderBoard(); toast('💀 Gone!'); }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') COLS.forEach(c => closeForm(c.id)); });
+
+/* ═══════════════════════════════════════════
+   PLAN VIEW
+   ═══════════════════════════════════════════ */
+function renderPlan() {
+  const all = allNotes();
+  const container = document.getElementById('plan-content');
+
+  // Group notes by linked story
+  const byStory = {};
+  const unlinked = [];
+  const actionItems = [];
+
+  all.forEach(n => {
+    if (n.col === 'bottle') actionItems.push(n);
+    if (n.linkedKey) {
+      if (!byStory[n.linkedKey]) byStory[n.linkedKey] = [];
+      byStory[n.linkedKey].push(n);
+    } else {
+      unlinked.push(n);
+    }
+  });
+
+  const colLabel = { fruits:'🍎 Sweet Fruits', claire:'🗣️ Claire', gold:'💰 Gold', pirates:'🏴‍☠️ Pirates', bottle:'🍾 Bottle' };
+
+  let html = '';
+
+  // 1. Notes linked to stories
+  const linkedKeys = Object.keys(byStory);
+  // Group linked stories by epic
+  const linkedByEpic = {};
+  linkedKeys.forEach(key => {
+    const issue = ISSUES.find(i => i.key === key);
+    const ek = issue ? (issue.epicKey || '__none__') : '__none__';
+    if (!linkedByEpic[ek]) linkedByEpic[ek] = [];
+    linkedByEpic[ek].push(key);
+  });
+
+  html += `<div class="plan-section">
+    <div class="plan-section-head">
+      <span style="font-size:24px;">🔗</span>
+      <h3 style="color:var(--gold);">Notes Linked to Quests</h3>
+      <span class="plan-count">${linkedKeys.length} quests</span>
+    </div>
+    <div class="plan-section-body">
+      ${linkedKeys.length === 0 ? '<div style="color:var(--text-muted);font-style:italic;font-size:13px;">No notes linked to stories yet. Link notes in the retro board using the dropdown!</div>' : ''}
+      ${Object.keys(linkedByEpic).map(ek => {
+        const epicName = EPICS[ek] || 'No Epic';
+        const keys = linkedByEpic[ek];
+        return `<div style="margin-bottom:16px;">
+          <div style="font-family:'Pirata One',cursive;font-size:16px;color:var(--gold);margin-bottom:8px;padding:6px 0;border-bottom:1px solid var(--border-light);">🎯 ${esc(epicName)} <span style="font-family:Inter,sans-serif;font-size:12px;color:var(--text-muted);">(${keys.length} quests)</span></div>
+          ${keys.map(key => {
+            const issue = ISSUES.find(i => i.key === key);
+            const notes = byStory[key];
+            return '<div class="plan-story"><div class="plan-story-head"><a href="'+SPRINT.jira+key+'" target="_blank">'+key+'</a><span style="flex:1">'+(issue ? esc(issue.summary) : key)+'</span><span style="font-size:11px;color:var(--text-muted)">'+notes.length+' note(s)</span></div><div class="plan-story-notes">'+notes.map(n => '<div class="plan-note"><span class="plan-note-col '+n.col+'">'+colLabel[n.col]+'</span><span style="flex:1">'+esc(n.text)+'</span><span style="font-size:11px;color:var(--text-muted)">— '+esc(n.author)+'</span></div>').join('')+'</div></div>';
+          }).join('')}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  // 2. Unlinked notes — let user link them
+  html += `<div class="plan-section">
+    <div class="plan-section-head">
+      <span style="font-size:24px;">📋</span>
+      <h3 style="color:var(--text);">Unlinked Notes</h3>
+      <span class="plan-count">${unlinked.length}</span>
+    </div>
+    <div class="plan-section-body">
+      ${unlinked.length === 0 ? '<div style="color:var(--text-muted);font-style:italic;font-size:13px;">All notes are linked! Great work, Captain! 🎉</div>' : ''}
+      ${unlinked.map(n => `<div class="unlinked-note">
+        <span class="plan-note-col ${n.col}">${colLabel[n.col]}</span>
+        <span style="flex:1;font-size:13px;">${esc(n.text)}</span>
+        <select id="planlink-${n.id}">
+          ${planStoryOptions()}
+        </select>
+        <button class="link-btn" onclick="planLink('${n.col}','${n.id}')">🔗 Link</button>
+      </div>`).join('')}
+    </div>
+  </div>`;
+
+  // 3. Action items (Message in a Bottle)
+  html += `<div class="plan-section">
+    <div class="plan-section-head">
+      <span style="font-size:24px;">🍾</span>
+      <h3 style="color:var(--purple);">Action Items for Next Sprint</h3>
+      <span class="plan-count">${actionItems.length}</span>
+    </div>
+    <div class="plan-section-body">
+      ${actionItems.length === 0 ? '<div style="color:var(--text-muted);font-style:italic;font-size:13px;">No action items yet. Add notes in "Message in a Bottle" column!</div>' : ''}
+      ${actionItems.map(n => `<div class="action-item">
+        <span class="action-text">
+          ${esc(n.text)}
+          ${n.linkedKey ? `<span class="note-linked" style="margin-left:8px;">🔗 <a href="${SPRINT.jira}${n.linkedKey}" target="_blank">${n.linkedKey}</a></span>` : ''}
+        </span>
+        <span class="action-author">— ${esc(n.author)}</span>
+      </div>`).join('')}
+      ${actionItems.length > 0 ? `<div style="margin-top:12px;padding:12px;background:var(--blue-bg);border-radius:8px;font-size:13px;color:var(--blue);">
+        💡 <strong>Tip:</strong> Export these notes, then ask Copilot to create Jira stories for the next sprint.
+      </div>` : ''}
+    </div>
+  </div>`;
+
+  container.innerHTML = html;
+}
+
+function planLink(col, nid) {
+  const sel = document.getElementById(`planlink-${nid}`);
+  const key = sel.value;
+  if (!key) return;
+  linkNote(col, nid, key);
+  renderPlan();
+  renderBoard();
+  toast('🔗 Linked to ' + key + '!');
+}
+
+/* ═══════════════════════════════════════════
+   VIEW SWITCHING
+   ═══════════════════════════════════════════ */
+function switchView(view) {
+  document.getElementById('tab-retro').classList.toggle('active', view === 'retro');
+  document.getElementById('tab-plan').classList.toggle('active', view === 'plan');
+  document.getElementById('view-retro').classList.toggle('active', view === 'retro');
+  document.getElementById('view-plan').classList.toggle('active', view === 'plan');
+  if (view === 'plan') renderPlan();
+}
+
+/* ═══════════════════════════════════════════
+   KPIs
+   ═══════════════════════════════════════════ */
+function updateKPIs() {
+  let done=0, ip=0, todo=0;
+  ISSUES.forEach(i => { if(i.statusCategory==='Done') done++; else if(i.statusCategory==='In Progress') ip++; else todo++; });
+  document.getElementById('bar-done').textContent = done;
+  document.getElementById('bar-ip').textContent = ip;
+  document.getElementById('bar-todo').textContent = todo;
+}
+
+/* ═══════════════════════════════════════════
+   EXPORT
+   ═══════════════════════════════════════════ */
+function copyForObsidian() {
+  const allN = allNotes();
+  const colLabel = {fruits:'🍎 Sweet Fruits',claire:'💬 Discuss with Claire',gold:'🏆 Hidden Gold',pirates:'🏴‍☠️ Pirates on the Shore',bottle:'📜 Message in a Bottle'};
+  const colEmoji = {fruits:'🍎',claire:'💬',gold:'🏆',pirates:'🏴‍☠️',bottle:'📜'};
+
+  let md = '---\n';
+  md += 'tags: [retro, sprint-46, mcmt]\n';
+  md += 'date: ' + new Date().toISOString().split('T')[0] + '\n';
+  md += 'sprint: "Sprint 46"\nsprint_goal: "' + SPRINT.goal + '"\nstatus: completed\n';
+  md += '---\n\n# 🏴‍☠️ Sprint 46 Retro — ' + SPRINT.name + '\n\n';
+  md += '> **Sprint Goal:** ' + SPRINT.goal + '\n';
+  md += '> **Period:** ' + SPRINT.start + ' to ' + SPRINT.end + '\n';
+  md += '> **Crew:** ' + [...new Set(allN.map(n=>n.author))].join(', ') + '\n\n---\n\n';
+
+  COLS.forEach(c => {
+    const notes = allN.filter(n => n.col === c.id);
+    md += '## ' + colLabel[c.id] + '\n\n';
+    if (!notes.length) { md += '_No notes_\n\n'; return; }
+    notes.forEach(n => {
+      const link = n.linkedKey ? ' → [[' + n.linkedKey + ']]' : '';
+      md += '- ' + n.text + ' _(' + n.author + ')_' + link;
+      if (n.votes > 0) md += ' 👍×' + n.votes;
+      md += '\n';
+    });
+    md += '\n';
+  });
+
+  const actions = allN.filter(n => n.col === 'bottle');
+  if (actions.length) {
+    md += '---\n\n## ⚓ Action Items\n\n';
+    actions.forEach(n => {
+      md += '- [ ] ' + n.text + (n.linkedKey ? ' → [[' + n.linkedKey + ']]' : '') + ' _(' + n.author + ')_\n';
+    });
+    md += '\n';
+  }
+
+  const linked = allN.filter(n => n.linkedKey);
+  if (linked.length) {
+    md += '---\n\n## 🔗 Linked User Stories\n\n';
+    const byEpic = {};
+    linked.forEach(n => {
+      const issue = ISSUES.find(i => i.key === n.linkedKey);
+      const ek = issue ? (issue.epicKey || '__none__') : '__none__';
+      if (!byEpic[ek]) byEpic[ek] = new Set();
+      byEpic[ek].add(n.linkedKey);
+    });
+    Object.keys(byEpic).forEach(ek => {
+      md += '### 🎯 ' + (EPICS[ek] || 'No Epic') + '\n\n';
+      byEpic[ek].forEach(key => {
+        const issue = ISSUES.find(i => i.key === key);
+        const storyNotes = linked.filter(n => n.linkedKey === key);
+        md += '- **' + key + '** — ' + (issue ? issue.summary : key) + ' `' + (issue ? issue.status : '?') + '`\n';
+        storyNotes.forEach(n => {
+          md += '  - ' + colEmoji[n.col] + ' ' + n.text + ' _(' + n.author + ')_\n';
+        });
+      });
+      md += '\n';
+    });
+  }
+
+  navigator.clipboard.writeText(md).then(() => {
+    toast('✅ Copied markdown for Obsidian!');
+  });
+}
+
+function exportAll() {
+  const d = _cache;
+  const obj = { sprint: SPRINT, exported: new Date().toISOString(), pirate: currentUser(), columns: {} };
+  const colLabel = { fruits:'Sweet Fruits', claire:'Discuss with Claire', gold:'Hidden Gold', pirates:'Pirates on the Shore', bottle:'Message in a Bottle' };
+  COLS.forEach(c => { obj.columns[c.id] = { label: colLabel[c.id], notes: d[c.id]||[] }; });
+  const blob = new Blob([JSON.stringify(obj,null,2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `retro-sprint46-${new Date().toISOString().split('T')[0]}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('📥 Exported!');
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════ */
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
