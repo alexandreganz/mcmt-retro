@@ -590,6 +590,200 @@
     z-index: 1000;
     box-shadow: var(--shadow-lg);
   }
+
+  /* ═══ CREW PANEL ═══ */
+  .crew-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 32px;
+    background: linear-gradient(90deg, var(--gold-bg), transparent);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12px;
+    color: var(--text-muted);
+    overflow-x: auto;
+  }
+  .crew-bar .crew-label {
+    font-weight: 600;
+    color: var(--gold);
+    white-space: nowrap;
+    font-size: 13px;
+  }
+  .crew-avatars {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .crew-avatar {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px 3px 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    animation: crewIn 0.3s ease;
+  }
+  .crew-avatar .crew-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 4px var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  @keyframes crewIn { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+
+  /* ═══ STORY PICKER (replaces select dropdown) ═══ */
+  .story-picker {
+    position: relative;
+    margin-top: 6px;
+  }
+  .story-picker-trigger {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .story-picker-trigger:hover { border-color: var(--gold); }
+  .story-picker-trigger .sp-value { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .story-picker-trigger .sp-clear {
+    margin-left: 6px;
+    color: var(--red);
+    font-size: 14px;
+    cursor: pointer;
+    display: none;
+  }
+  .story-picker-trigger.has-value .sp-clear { display: inline; }
+  .story-picker-trigger.has-value .sp-value { color: var(--text); font-weight: 500; }
+  .story-picker-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    max-height: 320px;
+    overflow: hidden;
+    flex-direction: column;
+    margin-top: 4px;
+  }
+  .story-picker-dropdown.open { display: flex; }
+  .sp-search {
+    padding: 8px 10px;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    background: var(--surface);
+  }
+  .sp-search::placeholder { color: var(--border); }
+  .sp-list {
+    overflow-y: auto;
+    flex: 1;
+  }
+  .sp-epic {
+    border-bottom: 1px solid var(--border-light);
+  }
+  .sp-epic:last-child { border-bottom: none; }
+  .sp-epic-head {
+    padding: 7px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--gold-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .sp-epic-head:hover { background: rgba(184,134,11,0.12); }
+  .sp-epic-head .sp-arrow { transition: transform 0.2s; font-size: 10px; }
+  .sp-epic-head.collapsed .sp-arrow { transform: rotate(-90deg); }
+  .sp-epic-items { }
+  .sp-epic-head.collapsed + .sp-epic-items { display: none; }
+  .sp-item {
+    padding: 6px 10px 6px 20px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    color: var(--text);
+  }
+  .sp-item:hover { background: var(--blue-bg); color: var(--blue); }
+  .sp-item .sp-key { font-weight: 600; color: var(--blue); font-size: 11px; white-space: nowrap; }
+  .sp-item .sp-status {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  .sp-status-done { background: var(--green-bg); color: var(--green); }
+  .sp-status-ip { background: rgba(211,84,0,0.1); color: var(--orange); }
+  .sp-status-todo { background: var(--bg); color: var(--text-muted); }
+  .sp-no-match { padding: 12px; text-align: center; color: var(--text-muted); font-size: 12px; font-style: italic; }
+
+  /* ═══ PLAN VIEW EPIC CARDS ═══ */
+  .plan-epic-card {
+    margin-bottom: 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .plan-epic-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--gold-bg), rgba(218,165,32,0.08));
+    border-bottom: 2px solid var(--gold);
+    cursor: pointer;
+  }
+  .plan-epic-head:hover { background: rgba(184,134,11,0.12); }
+  .plan-epic-head .epic-emoji { font-size: 18px; }
+  .plan-epic-head .epic-name {
+    flex: 1;
+    font-family: 'Pirata One', cursive;
+    font-size: 16px;
+    color: var(--gold);
+  }
+  .plan-epic-head .epic-badge {
+    background: var(--gold);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .plan-epic-head .epic-arrow { font-size: 12px; transition: transform 0.2s; }
+  .plan-epic-head.collapsed .epic-arrow { transform: rotate(-90deg); }
+  .plan-epic-body { padding: 12px 16px; }
+  .plan-epic-head.collapsed + .plan-epic-body { display: none; }
   .toast.show { display: flex; align-items: center; gap: 6px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -646,6 +840,14 @@
     <span style="margin-left:auto;">28 Apr – 07 May 2026</span>
   </div>
 
+  <!-- CREW BAR -->
+  <div class="crew-bar" id="crew-bar">
+    <span class="crew-label">🏴‍☠️ Crew Aboard:</span>
+    <div class="crew-avatars" id="crew-avatars">
+      <span style="color:var(--text-muted);font-style:italic;">Waiting for pirates...</span>
+    </div>
+  </div>
+
   <!-- ═══════════ RETRO BOARD VIEW ═══════════ -->
   <div class="retro-view active" id="view-retro">
     <div class="board" id="board"></div>
@@ -699,6 +901,109 @@ function storyOptions() {
   }
   return html;
 }
+
+/* ═══════════════════════════════════════════
+   STORY PICKER (custom dropdown with search)
+   ═══════════════════════════════════════════ */
+function buildPickerHTML(filter) {
+  const f = (filter||'').toLowerCase();
+  const grouped = {};
+  ISSUES.forEach(i => {
+    const ek = i.epicKey || '__none__';
+    if (!grouped[ek]) grouped[ek] = [];
+    grouped[ek].push(i);
+  });
+
+  let html = '';
+  let anyMatch = false;
+
+  Object.keys(EPICS).forEach(ek => {
+    if (!grouped[ek]) return;
+    const items = grouped[ek].filter(i =>
+      !f || i.key.toLowerCase().includes(f) || i.summary.toLowerCase().includes(f) || EPICS[ek].toLowerCase().includes(f)
+    );
+    if (!items.length) return;
+    anyMatch = true;
+
+    const epicLabel = EPICS[ek].length > 50 ? EPICS[ek].substring(0,50)+'…' : EPICS[ek];
+    html += '<div class="sp-epic">';
+    html += '<div class="sp-epic-head" onclick="this.classList.toggle('collapsed')"><span class="sp-arrow">▼</span> 🎯 ' + esc(epicLabel) + ' <span style="font-weight:400;opacity:0.6;">(' + items.length + ')</span></div>';
+    html += '<div class="sp-epic-items">';
+    items.forEach(i => {
+      const sc = i.statusCategory === 'Done' ? 'done' : (i.statusCategory === 'In Progress' ? 'ip' : 'todo');
+      html += '<div class="sp-item" data-key="' + i.key + '"><span class="sp-key">' + i.key + '</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(i.summary) + '</span> <span class="sp-status sp-status-' + sc + '">' + i.status + '</span></div>';
+    });
+    html += '</div></div>';
+  });
+
+  if (grouped['__none__']) {
+    const items = grouped['__none__'].filter(i =>
+      !f || i.key.toLowerCase().includes(f) || i.summary.toLowerCase().includes(f)
+    );
+    if (items.length) {
+      anyMatch = true;
+      html += '<div class="sp-epic"><div class="sp-epic-head" onclick="this.classList.toggle('collapsed')"><span class="sp-arrow">▼</span> 📋 No Epic <span style="font-weight:400;opacity:0.6;">(' + items.length + ')</span></div>';
+      html += '<div class="sp-epic-items">';
+      items.forEach(i => {
+        const sc = i.statusCategory === 'Done' ? 'done' : (i.statusCategory === 'In Progress' ? 'ip' : 'todo');
+        html += '<div class="sp-item" data-key="' + i.key + '"><span class="sp-key">' + i.key + '</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(i.summary) + '</span> <span class="sp-status sp-status-' + sc + '">' + i.status + '</span></div>';
+      });
+      html += '</div></div>';
+    }
+  }
+
+  if (!anyMatch) html = '<div class="sp-no-match">No quests matching "' + esc(f) + '"</div>';
+  return html;
+}
+
+function togglePicker(col) {
+  const dd = document.getElementById('spdd-' + col);
+  const isOpen = dd.classList.contains('open');
+  // Close all pickers first
+  document.querySelectorAll('.story-picker-dropdown').forEach(d => d.classList.remove('open'));
+  if (!isOpen) {
+    dd.classList.add('open');
+    const list = document.getElementById('splist-' + col);
+    list.innerHTML = buildPickerHTML('');
+    // Attach click handlers
+    list.querySelectorAll('.sp-item').forEach(item => {
+      item.addEventListener('click', () => selectPickerItem(col, item.dataset.key));
+    });
+    dd.querySelector('.sp-search').value = '';
+    dd.querySelector('.sp-search').focus();
+  }
+}
+
+function filterPicker(col, q) {
+  const list = document.getElementById('splist-' + col);
+  list.innerHTML = buildPickerHTML(q);
+  list.querySelectorAll('.sp-item').forEach(item => {
+    item.addEventListener('click', () => selectPickerItem(col, item.dataset.key));
+  });
+}
+
+function selectPickerItem(col, key) {
+  const issue = ISSUES.find(i => i.key === key);
+  document.getElementById('link-' + col).value = key;
+  const trigger = document.querySelector('#picker-' + col + ' .story-picker-trigger');
+  trigger.querySelector('.sp-value').textContent = '🔗 ' + key + ' — ' + (issue ? issue.summary.substring(0,40) : key);
+  trigger.classList.add('has-value');
+  document.getElementById('spdd-' + col).classList.remove('open');
+}
+
+function clearPicker(col) {
+  document.getElementById('link-' + col).value = '';
+  const trigger = document.querySelector('#picker-' + col + ' .story-picker-trigger');
+  trigger.querySelector('.sp-value').textContent = '🔗 Link to a quest (optional)';
+  trigger.classList.remove('has-value');
+}
+
+// Close pickers on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.story-picker')) {
+    document.querySelectorAll('.story-picker-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
 
 function planStoryOptions() {
   let html = '<option value="">Link to quest...</option>';
@@ -833,9 +1138,16 @@ function setupPresence() {
 db.ref(RETRO_PATH + '/crew').on('value', snap => {
   const crew = snap.val() || {};
   const names = Object.values(crew).map(c => c.name);
-  const el = document.getElementById('crew-online');
+  const el = document.getElementById('crew-avatars');
   if (el) {
-    el.innerHTML = '🏴‍☠️ <strong>' + names.length + '</strong> pirate' + (names.length!==1?'s':'') + ' aboard: ' + names.map(n => '<span style="color:var(--gold)">' + esc(n) + '</span>').join(', ');
+    if (names.length === 0) {
+      el.innerHTML = '<span style="color:var(--text-muted);font-style:italic;">Waiting for pirates...</span>';
+    } else {
+      el.innerHTML = names.map(n => {
+        const initials = n.split(' ').map(w => w[0]).join('').toUpperCase().substring(0,2);
+        return '<span class="crew-avatar"><span class="crew-dot"></span> ' + esc(n) + '</span>';
+      }).join('');
+    }
   }
 });
 
@@ -901,9 +1213,18 @@ function renderBoard() {
         <div class="add-form" id="form-${c.id}">
           <textarea placeholder="Share your thoughts..." id="text-${c.id}"
                     onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitNote('${c.id}');}"></textarea>
-          <select id="link-${c.id}">
-            ${storyOptions()}
-          </select>
+          <div class="story-picker" id="picker-${c.id}">
+            <input type="hidden" id="link-${c.id}" value="">
+            <button type="button" class="story-picker-trigger" onclick="togglePicker('${c.id}')">
+              <span class="sp-value">🔗 Link to a quest (optional)</span>
+              <span class="sp-clear" onclick="event.stopPropagation();clearPicker('${c.id}')">✕</span>
+              <span style="font-size:10px;">▼</span>
+            </button>
+            <div class="story-picker-dropdown" id="spdd-${c.id}">
+              <input type="text" class="sp-search" placeholder="🔍 Search stories or epics..." oninput="filterPicker('${c.id}', this.value)">
+              <div class="sp-list" id="splist-${c.id}"></div>
+            </div>
+          </div>
           <div class="form-row">
             <button class="save-btn" onclick="submitNote('${c.id}')">${c.emoji} Add</button>
             <button class="cancel-btn" onclick="closeForm('${c.id}')">Cancel</button>
@@ -947,7 +1268,8 @@ function closeForm(col) {
   document.getElementById(`form-${col}`).classList.remove('open');
   document.getElementById(`trigger-${col}`).style.display = '';
   document.getElementById(`text-${col}`).value = '';
-  document.getElementById(`link-${col}`).value = '';
+  clearPicker(col);
+  document.querySelectorAll('.story-picker-dropdown').forEach(d => d.classList.remove('open'));
 }
 function submitNote(col) {
   const text = document.getElementById(`text-${col}`).value.trim();
@@ -1013,14 +1335,23 @@ function renderPlan() {
       ${Object.keys(linkedByEpic).map(ek => {
         const epicName = EPICS[ek] || 'No Epic';
         const keys = linkedByEpic[ek];
-        return `<div style="margin-bottom:16px;">
-          <div style="font-family:'Pirata One',cursive;font-size:16px;color:var(--gold);margin-bottom:8px;padding:6px 0;border-bottom:1px solid var(--border-light);">🎯 ${esc(epicName)} <span style="font-family:Inter,sans-serif;font-size:12px;color:var(--text-muted);">(${keys.length} quests)</span></div>
-          ${keys.map(key => {
-            const issue = ISSUES.find(i => i.key === key);
-            const notes = byStory[key];
-            return '<div class="plan-story"><div class="plan-story-head"><a href="'+SPRINT.jira+key+'" target="_blank">'+key+'</a><span style="flex:1">'+(issue ? esc(issue.summary) : key)+'</span><span style="font-size:11px;color:var(--text-muted)">'+notes.length+' note(s)</span></div><div class="plan-story-notes">'+notes.map(n => '<div class="plan-note"><span class="plan-note-col '+n.col+'">'+colLabel[n.col]+'</span><span style="flex:1">'+esc(n.text)+'</span><span style="font-size:11px;color:var(--text-muted)">— '+esc(n.author)+'</span></div>').join('')+'</div></div>';
-          }).join('')}
-        </div>`;
+        const totalNotes = keys.reduce((sum,k) => sum + byStory[k].length, 0);
+        return '<div class="plan-epic-card">' +
+          '<div class="plan-epic-head" onclick="this.classList.toggle('collapsed')">' +
+            '<span class="epic-emoji">🎯</span>' +
+            '<span class="epic-name">' + esc(epicName) + '</span>' +
+            '<span class="epic-badge">' + keys.length + ' quest' + (keys.length!==1?'s':'') + ' · ' + totalNotes + ' note' + (totalNotes!==1?'s':'') + '</span>' +
+            '<span class="epic-arrow">▼</span>' +
+          '</div>' +
+          '<div class="plan-epic-body">' +
+            keys.map(key => {
+              const issue = ISSUES.find(i => i.key === key);
+              const notes = byStory[key];
+              const statusCl = issue ? (issue.statusCategory==='Done' ? 'sp-status-done' : issue.statusCategory==='In Progress' ? 'sp-status-ip' : 'sp-status-todo') : '';
+              return '<div class="plan-story"><div class="plan-story-head"><a href="'+SPRINT.jira+key+'" target="_blank">'+key+'</a><span style="flex:1">'+(issue ? esc(issue.summary) : key)+'</span>' + (issue ? '<span class="sp-status '+statusCl+'" style="font-size:10px;margin-left:4px;">'+issue.status+'</span>' : '') + '<span style="font-size:11px;color:var(--text-muted);margin-left:8px;">'+notes.length+' note(s)</span></div><div class="plan-story-notes">'+notes.map(n => '<div class="plan-note"><span class="plan-note-col '+n.col+'">'+colLabel[n.col]+'</span><span style="flex:1">'+esc(n.text)+'</span><span style="font-size:11px;color:var(--text-muted)">— '+esc(n.author)+'</span></div>').join('')+'</div></div>';
+            }).join('') +
+          '</div>' +
+        '</div>';
       }).join('')}
     </div>
   </div>`;

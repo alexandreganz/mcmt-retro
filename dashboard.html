@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCMT Sprint Dashboard — Sprint 46</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+    --green: #3fb950; --yellow: #d29922; --red: #f85149;
+    --blue: #58a6ff; --purple: #bc8cff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 24px; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .header h1 { font-size: 28px; font-weight: 600; }
+  .header .meta { color: var(--muted); font-size: 14px; text-align: right; }
+  .sprint-badge { display: inline-block; background: var(--accent); color: #000; padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-left: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 32px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .card h3 { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+  .big-number { font-size: 48px; font-weight: 700; line-height: 1; }
+  .big-number.green { color: var(--green); }
+  .big-number.yellow { color: var(--yellow); }
+  .big-number.red { color: var(--red); }
+  .big-number.blue { color: var(--blue); }
+  .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* Progress bars */
+  .progress-bar { background: var(--border); border-radius: 8px; height: 24px; overflow: hidden; display: flex; margin: 8px 0; }
+  .progress-segment { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #000; min-width: 30px; }
+  .seg-done { background: var(--green); }
+  .seg-progress { background: var(--yellow); }
+  .seg-todo { background: var(--border); color: var(--muted); }
+
+  /* Charts */
+  .chart-container { margin-top: 16px; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-top: 8px; }
+  .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .bar { width: 100%; border-radius: 4px 4px 0 0; position: relative; min-height: 4px; transition: height 0.3s; }
+  .bar-done { background: var(--green); }
+  .bar-notdone { background: var(--border); }
+  .bar-stack { width: 100%; display: flex; flex-direction: column-reverse; }
+  .bar-label { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center; white-space: nowrap; }
+  .bar-value { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .data-table th { text-align: left; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .data-table tr:hover { background: rgba(88,166,255,0.04); }
+  .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+  .status-dot.done { background: var(--green); }
+  .status-dot.in-progress { background: var(--yellow); }
+  .status-dot.to-do { background: var(--border); }
+  .tag { display: inline-block; background: rgba(88,166,255,0.1); color: var(--accent); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Health score */
+  .health-ring { width: 120px; height: 120px; position: relative; margin: 0 auto 12px; }
+  .health-ring svg { transform: rotate(-90deg); }
+  .health-ring .score { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; font-weight: 700; }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ''; display: block; width: 4px; height: 20px; background: var(--accent); border-radius: 2px; }
+
+  /* Donut chart for workload */
+  .donut-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+  .donut-legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .donut-legend-color { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* Risk */
+  .risk-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .risk-item:last-child { border-bottom: none; }
+  .risk-level { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; min-width: 60px; text-align: center; }
+  .risk-high { background: rgba(248,81,73,0.15); color: var(--red); }
+  .risk-medium { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .risk-low { background: rgba(63,185,80,0.15); color: var(--green); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>MCMT Sprint Dashboard <span class="sprint-badge">Sprint 46</span></h1>
+    <div style="color:var(--muted); margin-top:4px;">MCM - Sprint 46 · 28 Apr – 07 May 2026</div>
+  </div>
+  <div class="meta">
+    <div>Project: <strong>MCMT</strong></div>
+    <div>Board: MCMT board (Scrum)</div>
+    <div>Generated: 4 May 2026, 15:59</div>
+  </div>
+</div>
+
+<!-- SPRINT GOAL -->
+<div class="card" style="margin-bottom:24px; border-left: 4px solid var(--accent);">
+  <h3>🎯 Sprint Goal</h3>
+  <div style="font-size:16px; margin-top:8px;">OLGA IN MARRAKESH (26.04-2.05) — <strong>Release the BU Packs!</strong></div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="grid">
+  <div class="card">
+    <h3>Total Issues</h3>
+    <div class="big-number blue">50</div>
+    <div class="subtitle">Parent issues (excl. sub-tasks)</div>
+  </div>
+  <div class="card">
+    <h3>Completed</h3>
+    <div class="big-number green">9</div>
+    <div class="subtitle">18% completion rate</div>
+  </div>
+  <div class="card">
+    <h3>In Progress</h3>
+    <div class="big-number yellow">2</div>
+    <div class="subtitle">4% of sprint backlog</div>
+  </div>
+  <div class="card">
+    <h3>To Do</h3>
+    <div class="big-number red">39</div>
+    <div class="subtitle">78% not started · 3 days remaining</div>
+  </div>
+</div>
+
+<!-- SPRINT PROGRESS BAR -->
+<div class="card" style="margin-bottom:24px;">
+  <h3>Sprint Progress</h3>
+  <div class="progress-bar" style="height:32px; margin-top:12px;">
+    <div class="progress-segment seg-done" style="width:18%;">9 Done</div>
+    <div class="progress-segment seg-progress" style="width:4%;">2</div>
+    <div class="progress-segment seg-todo" style="width:78%;">39 To Do</div>
+  </div>
+  <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--muted);">
+    <span>🟢 Done: 18%</span>
+    <span>🟡 In Progress: 4%</span>
+    <span>⚪ To Do: 78%</span>
+  </div>
+</div>
+
+<!-- HEALTH ASSESSMENT + VELOCITY -->
+<div class="section">
+  <div class="section-title">Sprint Health &amp; Velocity Trend</div>
+  <div class="two-col">
+    <!-- Health Score -->
+    <div class="card" style="text-align:center;">
+      <h3>Sprint Health Score</h3>
+      <div class="health-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#30363d" stroke-width="10"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#d29922" stroke-width="10"
+            stroke-dasharray="326.7" stroke-dashoffset="222" stroke-linecap="round"/>
+        </svg>
+        <div class="score" style="color:var(--yellow);">32</div>
+      </div>
+      <div style="color:var(--yellow); font-weight:600; font-size:16px;">⚠️ AT RISK</div>
+      <div class="subtitle" style="margin-top:8px;">78% of work not started with 3 days left.<br>24 BU Pack reviews at risk of carry-over.</div>
+      <div style="margin-top:16px; text-align:left;">
+        <div style="font-size:13px; margin-bottom:8px;"><strong>Key Dimensions:</strong></div>
+        <div style="display:flex; justify-content:space-between; font-size:13px; padding:4px 0; border-bottom:1px solid var(--border);">
+          <span>Commitment Reliability</span><span style="color:var(--red);">18%</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:13px; padding:4px 0; border-bottom:1px solid var(--border);">
+          <span>Scope Stability</span><span style="color:var(--yellow);">50%</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:13px; padding:4px 0;">
+          <span>Velocity Trend</span><span style="color:var(--red);">Declining ↓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Velocity Chart -->
+    <div class="card">
+      <h3>Velocity — Issues Completed per Sprint</h3>
+      <div class="bar-chart" style="align-items: flex-end;">
+        <!-- Sprint 41 -->
+        <div class="bar-group">
+          <div class="bar-value" style="color:var(--green);">29</div>
+          <div style="height:145px; width:100%; display:flex; flex-direction:column-reverse;">
+            <div class="bar bar-done" style="height:97%;"></div>
+            <div class="bar bar-notdone" style="height:3%;"></div>
+          </div>
+          <div class="bar-label">S41</div>
+        </div>
+        <!-- Sprint 42 -->
+        <div class="bar-group">
+          <div class="bar-value" style="color:var(--green);">27</div>
+          <div style="height:145px; width:100%; display:flex; flex-direction:column-reverse;">
+            <div class="bar bar-done" style="height:84%;"></div>
+            <div class="bar bar-notdone" style="height:16%;"></div>
+          </div>
+          <div class="bar-label">S42</div>
+        </div>
+        <!-- Sprint 43 -->
+        <div class="bar-group">
+          <div class="bar-value" style="color:var(--yellow);">25</div>
+          <div style="height:145px; width:100%; display:flex; flex-direction:column-reverse;">
+            <div class="bar bar-done" style="height:78%;"></div>
+            <div class="bar bar-notdone" style="height:22%;"></div>
+          </div>
+          <div class="bar-label">S43</div>
+        </div>
+        <!-- Sprint 44 -->
+        <div class="bar-group">
+          <div class="bar-value" style="color:var(--red);">18</div>
+          <div style="height:145px; width:100%; display:flex; flex-direction:column-reverse;">
+            <div class="bar bar-done" style="height:51%;"></div>
+            <div class="bar bar-notdone" style="height:49%;"></div>
+          </div>
+          <div class="bar-label">S44</div>
+        </div>
+        <!-- Sprint 45 -->
+        <div class="bar-group">
+          <div class="bar-value" style="color:var(--yellow);">22</div>
+          <div style="height:145px; width:100%; display:flex; flex-direction:column-reverse;">
+            <div class="bar bar-done" style="height:63%;"></div>
+            <div class="bar bar-notdone" style="height:37%;"></div>
+          </div>
+          <div class="bar-label">S45</div>
+        </div>
+        <!-- Sprint 46 -->
+        <div class="bar-group">
+          <div class="bar-value" style="color:var(--red);">9</div>
+          <div style="height:145px; width:100%; display:flex; flex-direction:column-reverse;">
+            <div class="bar bar-done" style="height:18%;"></div>
+            <div class="bar bar-notdone" style="height:82%;"></div>
+          </div>
+          <div class="bar-label">S46*</div>
+        </div>
+      </div>
+      <div class="subtitle" style="margin-top:12px;">* Sprint 46 is active (3 days remaining). Green = completed, grey = not done.</div>
+      <div style="margin-top:16px; padding:12px; background:rgba(248,81,73,0.08); border-radius:8px; border-left:3px solid var(--red);">
+        <div style="font-size:13px;"><strong>📉 Velocity declining.</strong> Average completion: 24.2 issues/sprint (S41–45). Current pace for S46: ~9. Carry-over of 30+ issues is likely.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKLOAD DISTRIBUTION -->
+<div class="section">
+  <div class="section-title">Workload Distribution</div>
+  <div class="two-col">
+    <div class="card">
+      <h3>Issues by Assignee</h3>
+      <table class="data-table">
+        <thead><tr><th>Assignee</th><th>Assigned</th><th>Done</th><th>Rate</th></tr></thead>
+        <tbody>
+          <tr><td>Alexandre Ganz</td><td>13</td><td>6</td><td style="color:var(--yellow);">46%</td></tr>
+          <tr><td>Alexandre Goubin</td><td>9</td><td>1</td><td style="color:var(--red);">11%</td></tr>
+          <tr><td>Julia Silva-Bechmann</td><td>3</td><td>3</td><td style="color:var(--green);">100%</td></tr>
+          <tr><td style="color:var(--muted);">Unassigned</td><td>25</td><td>0</td><td style="color:var(--red);">0%</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px; padding:10px; background:rgba(248,81,73,0.08); border-radius:8px;">
+        <div style="font-size:13px;">⚠️ <strong>25 issues (50%) are unassigned</strong> — all 24 BU Pack reviews + 1 other.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Issues by Type</h3>
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>Count</th><th>Done</th></tr></thead>
+        <tbody>
+          <tr><td>📋 Task</td><td>28</td><td>2</td></tr>
+          <tr><td>📖 Story</td><td>21</td><td>7</td></tr>
+          <tr><td>🎯 Epic</td><td>1</td><td>0</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:24px;">
+        <h3 style="margin-bottom:12px;">Sprint Composition</h3>
+        <div class="progress-bar">
+          <div class="progress-segment" style="width:56%; background:var(--accent); color:#000;">Tasks 56%</div>
+          <div class="progress-segment" style="width:42%; background:var(--purple); color:#000;">Stories 42%</div>
+          <div class="progress-segment" style="width:2%; background:var(--green); color:#000;">E</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RISK ANALYSIS -->
+<div class="section">
+  <div class="section-title">Risk Analysis</div>
+  <div class="card">
+    <div class="risk-item">
+      <div class="risk-level risk-high">HIGH</div>
+      <div>
+        <div style="font-weight:600;">BU Pack Reviews Mass Carry-Over</div>
+        <div class="subtitle">24 BU Pack Review tasks are all "To Do" and unassigned. Sprint goal "Release the BU Packs!" is at risk of not being met. None have sub-tasks started.</div>
+      </div>
+    </div>
+    <div class="risk-item">
+      <div class="risk-level risk-high">HIGH</div>
+      <div>
+        <div style="font-weight:600;">Declining Velocity Trend</div>
+        <div class="subtitle">Completion rate dropped from 97% (S41) to 63% (S45). Sprint scope increased from 30→50 issues while team capacity hasn't grown. Over-commitment pattern emerging.</div>
+      </div>
+    </div>
+    <div class="risk-item">
+      <div class="risk-level risk-medium">MED</div>
+      <div>
+        <div style="font-weight:600;">Unbalanced Workload</div>
+        <div class="subtitle">50% of issues unassigned. Active contributors (Ganz, Goubin, Silva-Bechmann) carry all the load. Risk of burnout and bottleneck.</div>
+      </div>
+    </div>
+    <div class="risk-item">
+      <div class="risk-level risk-medium">MED</div>
+      <div>
+        <div style="font-weight:600;">Team Availability</div>
+        <div class="subtitle">Sprint goal notes "OLGA IN MARRAKESH" — reduced capacity during sprint. Easter/holiday effects visible in Sprint 44 completion drop (51%).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RECOMMENDATIONS -->
+<div class="section">
+  <div class="section-title">Recommendations</div>
+  <div class="card" style="border-left: 4px solid var(--green);">
+    <div style="display:grid; gap:16px;">
+      <div>
+        <div style="font-weight:600;">1. Triage BU Pack Reviews immediately</div>
+        <div class="subtitle">Assign the 24 unassigned BU Pack reviews to team members or defer to Sprint 47. Currently blocking the sprint goal.</div>
+      </div>
+      <div>
+        <div style="font-weight:600;">2. Right-size sprint scope</div>
+        <div class="subtitle">Average velocity is ~24 issues/sprint. Sprint 46 loaded with 50. Consider capping at 25-30 to restore completion rates above 80%.</div>
+      </div>
+      <div>
+        <div style="font-weight:600;">3. Distinguish "BU Pack" work from regular sprint work</div>
+        <div class="subtitle">The 24 identical BU review tasks may be better tracked as an epic with a separate timeline rather than inflating sprint scope.</div>
+      </div>
+      <div>
+        <div style="font-weight:600;">4. Monitor team capacity alignment</div>
+        <div class="subtitle">With team members on travel/holiday, adjust sprint commitments to realistic capacity. Sprint goal and backlog size should reflect available person-days.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ISSUE LIST -->
+<div class="section">
+  <div class="section-title">Sprint Backlog — Key Issues</div>
+  <div class="card" style="overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr><th>Key</th><th>Summary</th><th>Type</th><th>Status</th><th>Assignee</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2477">MCMT-2477</a></td><td>Central hub for MCCM on the usage of agents</td><td>🎯 Epic</td><td><span class="status-dot in-progress"></span>In Progress</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2482">MCMT-2482</a></td><td>MCCM Agent Brick Page</td><td>📖 Story</td><td><span class="status-dot in-progress"></span>In Progress</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2492">MCMT-2492</a></td><td>Create Agents in Copilot for easy sharing</td><td>📖 Story</td><td><span class="status-dot to-do"></span>To Do</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2488">MCMT-2488</a></td><td>Migrate page to SharePoint</td><td>📖 Story</td><td><span class="status-dot to-do"></span>To Do</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2486">MCMT-2486</a></td><td>BU Pack Section 2 Text</td><td>📖 Story</td><td><span class="status-dot done"></span>Done</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2485">MCMT-2485</a></td><td>BU Pack Section 3 Text Adjustments</td><td>📖 Story</td><td><span class="status-dot done"></span>Done</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2481">MCMT-2481</a></td><td>Build the Maturity Clustering analysis</td><td>📖 Story</td><td><span class="status-dot done"></span>Done</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2480">MCMT-2480</a></td><td>Finalise the Marketing Operating Complexity Modeling</td><td>📖 Story</td><td><span class="status-dot done"></span>Done</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2479">MCMT-2479</a></td><td>Draft the functional pack for trade</td><td>📖 Story</td><td><span class="status-dot to-do"></span>To Do</td><td>Alexandre Goubin</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2470">MCMT-2470</a></td><td>Merger of versions for marketing roles + Workload</td><td>📖 Story</td><td><span class="status-dot done"></span>Done</td><td>Alexandre Ganz</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2469">MCMT-2469</a></td><td>Reconnect Camilla and align on rest of year</td><td>📖 Story</td><td><span class="status-dot done"></span>Done</td><td>Alexandre Goubin</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2478">MCMT-2478</a></td><td>Send out 1 day to go email with ooo</td><td>📋 Task</td><td><span class="status-dot done"></span>Done</td><td>Julia Silva-Bechmann</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2468">MCMT-2468</a></td><td>Expenses</td><td>📋 Task</td><td><span class="status-dot done"></span>Done</td><td>Julia Silva-Bechmann</td></tr>
+        <tr><td><a href="https://legogroup.atlassian.net/browse/MCMT-2467">MCMT-2467</a></td><td>Push update of MCCM DLs to all owners</td><td>📋 Task</td><td><span class="status-dot done"></span>Done</td><td>Julia Silva-Bechmann</td></tr>
+        <tr style="background:rgba(248,81,73,0.04);">
+          <td colspan="5" style="color:var(--muted); font-style:italic; text-align:center;">+ 24 BU Pack Review tasks (all To Do, Unassigned) + 12 other items</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div>Generated by <strong>MCMT Sprint Dashboard</strong> · Powered by Jira MCP + PM Skills (Senior PM, Scrum Master)</div>
+  <div style="margin-top:4px;">Data source: MCMT board #2423 · Sprint 46 (ID: 34873) · Velocity window: Sprints 41–46</div>
+</div>
+
+</body>
+</html>

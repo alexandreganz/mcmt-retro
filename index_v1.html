@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏴‍☠️ MCMT Sprint Retro — Sprint 46</title>
+<style>
+  /* ═══════════════════════════════════════════════════════════
+     PIRATE RETRO THEME — Deep Ocean + Gold
+     ═══════════════════════════════════════════════════════════ */
+  @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --ocean-deep: #f5efe6;
+    --ocean: #ede4d3;
+    --deck: #fff9f0;
+    --plank: #fef6eb;
+    --rope: #d4c4a8;
+    --sand: #7a6b55;
+    --parchment: #2c1810;
+    --gold: #b8860b;
+    --gold-dim: #8b6914;
+    --treasure: #daa520;
+    --green-sea: #2d8a4e;
+    --red-flag: #c0392b;
+    --blue-sky: #2874a6;
+    --purple-night: #7d3c98;
+    --orange-sunset: #d35400;
+    --rum: #8b4513;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--ocean-deep);
+    color: var(--parchment);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #d4b896 0%, #e6d5bd 50%, #ddc9a8 100%);
+    border-bottom: 3px solid var(--gold-dim);
+    padding: 24px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '⚓';
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+    opacity: 0.08;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header h1 {
+    font-family: 'Pirata One', cursive;
+    font-size: 42px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(139,105,20,0.2);
+  }
+  .header h1 span { font-size: 36px; }
+  .header .subtitle {
+    color: var(--sand);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .sprint-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+    color: var(--ocean-deep);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+  .header-meta {
+    text-align: right;
+    color: var(--sand);
+    font-size: 13px;
+  }
+  .header-meta strong { color: var(--parchment); }
+
+  /* ─── SPRINT GOAL BANNER ─── */
+  .goal-banner {
+    background: linear-gradient(90deg, rgba(240,192,64,0.08), rgba(240,192,64,0.02));
+    border: 1px solid rgba(240,192,64,0.2);
+    border-left: 4px solid var(--gold);
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .goal-banner .icon { font-size: 28px; }
+  .goal-banner .text { font-size: 15px; }
+  .goal-banner .text strong { color: var(--gold); }
+
+  /* ─── KPI ROW ─── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 0 32px 24px;
+  }
+  .kpi-card {
+    background: var(--deck);
+    border: 1px solid var(--rope);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .kpi-card .label {
+    font-size: 12px;
+    color: var(--sand);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .kpi-card .value {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .kpi-card .detail {
+    font-size: 12px;
+    color: var(--sand);
+    margin-top: 4px;
+  }
+  .kpi-card .value.gold { color: var(--gold); }
+  .kpi-card .value.green { color: var(--green-sea); }
+  .kpi-card .value.orange { color: var(--orange-sunset); }
+  .kpi-card .value.red { color: var(--red-flag); }
+
+  /* ─── RETRO BOARD ─── */
+  .board-section {
+    padding: 0 32px 32px;
+  }
+  .board-title {
+    font-family: 'Pirata One', cursive;
+    font-size: 28px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    min-height: 500px;
+  }
+  @media (max-width: 1200px) {
+    .board { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .board { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ─── RETRO COLUMN ─── */
+  .retro-col {
+    background: var(--deck);
+    border: 1px solid var(--rope);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .col-header {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--rope);
+    position: relative;
+  }
+  .col-header .col-icon { font-size: 28px; }
+  .col-header h3 {
+    font-family: 'Pirata One', cursive;
+    font-size: 20px;
+    margin-top: 4px;
+    line-height: 1.2;
+  }
+  .col-header .col-desc {
+    font-size: 12px;
+    color: var(--sand);
+    margin-top: 2px;
+    font-style: italic;
+  }
+  .col-header .note-count {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--rope);
+    color: var(--sand);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Column color accents */
+  .col-fruits .col-header { border-bottom-color: var(--green-sea); }
+  .col-fruits .col-header h3 { color: var(--green-sea); }
+  .col-claire .col-header { border-bottom-color: var(--blue-sky); }
+  .col-claire .col-header h3 { color: var(--blue-sky); }
+  .col-gold .col-header { border-bottom-color: var(--gold); }
+  .col-gold .col-header h3 { color: var(--gold); }
+  .col-pirates .col-header { border-bottom-color: var(--red-flag); }
+  .col-pirates .col-header h3 { color: var(--red-flag); }
+  .col-bottle .col-header { border-bottom-color: var(--purple-night); }
+  .col-bottle .col-header h3 { color: var(--purple-night); }
+
+  /* ─── NOTES ─── */
+  .notes-list {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .note-card {
+    background: var(--plank);
+    border: 1px solid var(--rope);
+    border-radius: 8px;
+    padding: 12px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .note-card:hover { border-color: var(--sand); }
+  .note-text {
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+  .note-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--sand);
+  }
+  .note-author { font-weight: 500; }
+  .note-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .note-btn {
+    background: none;
+    border: none;
+    color: var(--sand);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+  }
+  .note-btn:hover { color: var(--parchment); background: var(--rope); }
+  .note-btn.vote-btn { font-size: 12px; display: flex; align-items: center; gap: 2px; }
+  .note-btn.vote-btn.voted { color: var(--gold); }
+  .note-btn.delete-btn:hover { color: var(--red-flag); }
+
+  /* Note colors per column */
+  .col-fruits .note-card { border-left: 3px solid var(--green-sea); }
+  .col-claire .note-card { border-left: 3px solid var(--blue-sky); }
+  .col-gold .note-card { border-left: 3px solid var(--gold); }
+  .col-pirates .note-card { border-left: 3px solid var(--red-flag); }
+  .col-bottle .note-card { border-left: 3px solid var(--purple-night); }
+
+  /* ─── ADD NOTE FORM ─── */
+  .add-note-area {
+    padding: 12px;
+    border-top: 1px solid var(--rope);
+  }
+  .add-note-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--plank);
+    border: 1px dashed var(--rope);
+    border-radius: 8px;
+    color: var(--sand);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .add-note-btn:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+    background: rgba(240,192,64,0.05);
+  }
+  .note-form { display: none; }
+  .note-form.active { display: block; }
+  .note-form textarea {
+    width: 100%;
+    padding: 10px;
+    background: var(--plank);
+    border: 1px solid var(--rope);
+    border-radius: 8px;
+    color: var(--parchment);
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+  }
+  .note-form textarea:focus { border-color: var(--gold-dim); }
+  .note-form input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 8px;
+    background: var(--plank);
+    border: 1px solid var(--rope);
+    border-radius: 6px;
+    color: var(--parchment);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+  }
+  .note-form input:focus { border-color: var(--gold-dim); }
+  .note-form .form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .btn-save {
+    padding: 6px 16px;
+    background: var(--gold);
+    color: var(--ocean-deep);
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-save:hover { background: var(--treasure); }
+  .btn-cancel {
+    padding: 6px 16px;
+    background: transparent;
+    color: var(--sand);
+    border: 1px solid var(--rope);
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-cancel:hover { color: var(--parchment); border-color: var(--sand); }
+
+  /* ─── SPRINT BACKLOG SECTION ─── */
+  .backlog-section {
+    padding: 0 32px 32px;
+  }
+  .backlog-toggle {
+    background: var(--deck);
+    border: 1px solid var(--rope);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .backlog-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .backlog-header:hover { background: var(--plank); }
+  .backlog-header h3 {
+    font-family: 'Pirata One', cursive;
+    font-size: 22px;
+    color: var(--gold);
+  }
+  .backlog-chevron {
+    font-size: 20px;
+    color: var(--sand);
+    transition: transform 0.3s;
+  }
+  .backlog-chevron.open { transform: rotate(180deg); }
+  .backlog-content {
+    display: none;
+    padding: 0 20px 20px;
+  }
+  .backlog-content.open { display: block; }
+  .backlog-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .backlog-table th {
+    text-align: left;
+    font-size: 11px;
+    color: var(--sand);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--rope);
+  }
+  .backlog-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(42,52,86,0.5);
+    font-size: 13px;
+  }
+  .backlog-table tr:hover { background: rgba(240,192,64,0.03); }
+  .backlog-table a { color: var(--blue-sky); text-decoration: none; }
+  .backlog-table a:hover { text-decoration: underline; }
+  .status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .status-todo { background: rgba(122,107,85,0.12); color: var(--sand); }
+  .status-progress { background: rgba(211,84,0,0.12); color: var(--orange-sunset); }
+  .status-done { background: rgba(45,138,78,0.12); color: var(--green-sea); }
+
+  /* ─── TOOLBAR ─── */
+  .toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 0 32px 16px;
+  }
+  .tool-btn {
+    padding: 8px 16px;
+    background: var(--deck);
+    border: 1px solid var(--rope);
+    border-radius: 8px;
+    color: var(--sand);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .tool-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
+  .tool-btn.danger:hover { color: var(--red-flag); border-color: var(--red-flag); }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center;
+    padding: 24px 32px;
+    color: var(--sand);
+    font-size: 12px;
+    border-top: 1px solid var(--rope);
+    margin-top: 16px;
+  }
+  .footer .pirate-quote {
+    font-family: 'Pirata One', cursive;
+    font-size: 16px;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+  }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--deck);
+    border: 1px solid var(--gold-dim);
+    border-radius: 8px;
+    padding: 12px 20px;
+    color: var(--gold);
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .toast.show { display: flex; align-items: center; gap: 8px; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 24px 12px;
+    color: var(--rope);
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  /* ─── STORY NOTES ─── */
+  .story-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .story-row {
+    background: var(--plank);
+    border: 1px solid var(--rope);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .story-header {
+    display: grid;
+    grid-template-columns: 110px 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .story-header:hover { background: rgba(184,134,11,0.06); }
+  .story-key {
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .story-key a { color: var(--blue-sky); text-decoration: none; }
+  .story-key a:hover { text-decoration: underline; }
+  .story-summary {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .story-note-count {
+    background: var(--gold);
+    color: var(--ocean-deep);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+    display: none;
+  }
+  .story-note-count.has-notes { display: inline-block; }
+  .story-expand {
+    font-size: 14px;
+    color: var(--sand);
+    transition: transform 0.2s;
+    width: 20px;
+    text-align: center;
+  }
+  .story-expand.open { transform: rotate(90deg); }
+  .story-detail {
+    display: none;
+    padding: 0 16px 12px;
+    border-top: 1px solid var(--rope);
+  }
+  .story-detail.open { display: block; }
+  .story-detail-meta {
+    display: flex;
+    gap: 16px;
+    padding: 10px 0;
+    font-size: 12px;
+    color: var(--sand);
+  }
+  .story-notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .story-note-card {
+    background: var(--deck);
+    border: 1px solid var(--rope);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .story-note-text { font-size: 13px; line-height: 1.4; }
+  .story-note-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--sand);
+  }
+  .story-add-form {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .story-add-form textarea {
+    flex: 1;
+    padding: 8px 10px;
+    background: var(--deck);
+    border: 1px solid var(--rope);
+    border-radius: 6px;
+    color: var(--parchment);
+    font-family: inherit;
+    font-size: 13px;
+    resize: none;
+    min-height: 38px;
+    outline: none;
+  }
+  .story-add-form textarea:focus { border-color: var(--gold-dim); }
+  .story-add-btn {
+    padding: 8px 14px;
+    background: var(--gold);
+    color: var(--ocean-deep);
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .story-add-btn:hover { background: var(--treasure); }
+  .story-empty {
+    color: var(--sand);
+    font-size: 12px;
+    font-style: italic;
+    padding: 4px 0 8px;
+  }
+  .story-filter {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .story-filter input {
+    flex: 1;
+    max-width: 400px;
+    padding: 8px 12px;
+    background: var(--deck);
+    border: 1px solid var(--rope);
+    border-radius: 8px;
+    color: var(--parchment);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+  }
+  .story-filter input:focus { border-color: var(--gold-dim); }
+  .story-filter-badge {
+    font-size: 12px;
+    color: var(--sand);
+  }
+  .story-delete-btn {
+    background: none;
+    border: none;
+    color: var(--sand);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  .story-delete-btn:hover { color: var(--red-flag); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1><span>🏴‍☠️</span> Ahoy, Crew! Sprint Retro</h1>
+      <div class="subtitle">Time to chart our course, celebrate victories, and bury what didn't work!</div>
+    </div>
+    <div class="header-meta">
+      <div><span class="sprint-badge">Sprint 46</span></div>
+      <div style="margin-top:8px;">MCM — Sprint 46</div>
+      <div>28 Apr – 07 May 2026</div>
+      <div style="margin-top:4px;">Project: <strong>MCMT</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SPRINT GOAL ═══════════════ -->
+<div class="goal-banner">
+  <div class="icon">🗺️</div>
+  <div class="text">
+    <strong>Captain's Orders:</strong> Release the BU Packs! &nbsp;
+    <span style="color:var(--sand);">· OLGA IN MARRAKESH (26.04-2.05)</span>
+  </div>
+</div>
+
+<!-- ═══════════════ KPIs ═══════════════ -->
+<div class="kpi-row">
+  <div class="kpi-card">
+    <div class="label">🗺️ Total Quests</div>
+    <div class="value gold" id="kpi-total">50</div>
+    <div class="detail">Issues in the sprint</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">✅ Treasure Found</div>
+    <div class="value green" id="kpi-done">0</div>
+    <div class="detail">Completed</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">⚔️ Battles in Progress</div>
+    <div class="value orange" id="kpi-progress">0</div>
+    <div class="detail">In Progress</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">🏝️ Still on the Map</div>
+    <div class="value red" id="kpi-todo">50</div>
+    <div class="detail">To Do</div>
+  </div>
+</div>
+
+<!-- ═══════════════ TOOLBAR ═══════════════ -->
+<div class="toolbar">
+  <button class="tool-btn" onclick="exportNotes()" title="Download all retro notes as JSON">
+    📥 Export Notes
+  </button>
+  <button class="tool-btn danger" onclick="clearAllNotes()" title="Clear all notes (with confirmation)">
+    🗑️ Clear All
+  </button>
+</div>
+
+<!-- ═══════════════ RETRO BOARD ═══════════════ -->
+<div class="board-section">
+  <div class="board-title">⚓ Retro Board</div>
+  <div class="board">
+
+    <!-- 🍎 SWEET FRUITS -->
+    <div class="retro-col col-fruits" data-column="fruits">
+      <div class="col-header">
+        <div class="col-icon">🍎</div>
+        <h3>Sweet Fruits</h3>
+        <div class="col-desc">What went well, matey?</div>
+        <div class="note-count" data-count="fruits">0</div>
+      </div>
+      <div class="notes-list" data-notes="fruits">
+        <div class="empty-state">No fruits harvested yet...</div>
+      </div>
+      <div class="add-note-area">
+        <button class="add-note-btn" onclick="showForm('fruits')">+ Add a sweet fruit</button>
+        <div class="note-form" id="form-fruits">
+          <textarea placeholder="What treasure did we find this sprint?" id="text-fruits"></textarea>
+          <input type="text" placeholder="Your pirate name (optional)" id="author-fruits">
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveNote('fruits')">🍎 Add</button>
+            <button class="btn-cancel" onclick="hideForm('fruits')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🗣️ DISCUSS WITH CLAIRE -->
+    <div class="retro-col col-claire" data-column="claire">
+      <div class="col-header">
+        <div class="col-icon">🗣️</div>
+        <h3>Discuss with Claire</h3>
+        <div class="col-desc">Topics for the Captain's table</div>
+        <div class="note-count" data-count="claire">0</div>
+      </div>
+      <div class="notes-list" data-notes="claire">
+        <div class="empty-state">No topics raised yet...</div>
+      </div>
+      <div class="add-note-area">
+        <button class="add-note-btn" onclick="showForm('claire')">+ Raise a topic</button>
+        <div class="note-form" id="form-claire">
+          <textarea placeholder="What should we discuss with Claire?" id="text-claire"></textarea>
+          <input type="text" placeholder="Your pirate name (optional)" id="author-claire">
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveNote('claire')">🗣️ Add</button>
+            <button class="btn-cancel" onclick="hideForm('claire')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 💰 HIDDEN GOLD -->
+    <div class="retro-col col-gold" data-column="gold">
+      <div class="col-header">
+        <div class="col-icon">💰</div>
+        <h3>Hidden Gold</h3>
+        <div class="col-desc">Shout out to yer crew!</div>
+        <div class="note-count" data-count="gold">0</div>
+      </div>
+      <div class="notes-list" data-notes="gold">
+        <div class="empty-state">No gold discovered yet...</div>
+      </div>
+      <div class="add-note-area">
+        <button class="add-note-btn" onclick="showForm('gold')">+ Give a shout-out</button>
+        <div class="note-form" id="form-gold">
+          <textarea placeholder="Who deserves a gold star? 🌟" id="text-gold"></textarea>
+          <input type="text" placeholder="Your pirate name (optional)" id="author-gold">
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveNote('gold')">💰 Add</button>
+            <button class="btn-cancel" onclick="hideForm('gold')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🏴‍☠️ PIRATES ON THE SHORE -->
+    <div class="retro-col col-pirates" data-column="pirates">
+      <div class="col-header">
+        <div class="col-icon">🏴‍☠️</div>
+        <h3>Pirates on the Shore</h3>
+        <div class="col-desc">What didn't go well?</div>
+        <div class="note-count" data-count="pirates">0</div>
+      </div>
+      <div class="notes-list" data-notes="pirates">
+        <div class="empty-state">No storms reported yet...</div>
+      </div>
+      <div class="add-note-area">
+        <button class="add-note-btn" onclick="showForm('pirates')">+ Report a storm</button>
+        <div class="note-form" id="form-pirates">
+          <textarea placeholder="What rough seas did we face?" id="text-pirates"></textarea>
+          <input type="text" placeholder="Your pirate name (optional)" id="author-pirates">
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveNote('pirates')">🏴‍☠️ Add</button>
+            <button class="btn-cancel" onclick="hideForm('pirates')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🍾 MESSAGE IN A BOTTLE -->
+    <div class="retro-col col-bottle" data-column="bottle">
+      <div class="col-header">
+        <div class="col-icon">🍾</div>
+        <h3>Message in a Bottle</h3>
+        <div class="col-desc">Action points for the future</div>
+        <div class="note-count" data-count="bottle">0</div>
+      </div>
+      <div class="notes-list" data-notes="bottle">
+        <div class="empty-state">No messages cast yet...</div>
+      </div>
+      <div class="add-note-area">
+        <button class="add-note-btn" onclick="showForm('bottle')">+ Cast a message</button>
+        <div class="note-form" id="form-bottle">
+          <textarea placeholder="What action should we take next sprint?" id="text-bottle"></textarea>
+          <input type="text" placeholder="Your pirate name (optional)" id="author-bottle">
+          <div class="form-actions">
+            <button class="btn-save" onclick="saveNote('bottle')">🍾 Add</button>
+            <button class="btn-cancel" onclick="hideForm('bottle')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ STORY NOTES ═══════════════ -->
+<div class="backlog-section">
+  <div class="backlog-toggle">
+    <div class="backlog-header" onclick="toggleBacklog()">
+      <h3>📜 The Captain's Ledger — Story Notes</h3>
+      <span class="backlog-chevron" id="backlog-chevron">▼</span>
+    </div>
+    <div class="backlog-content" id="backlog-content">
+      <div class="story-filter">
+        <input type="text" placeholder="🔍 Search quests..." id="story-search" oninput="filterStories()">
+        <span class="story-filter-badge" id="story-filter-badge">50 quests</span>
+      </div>
+      <div class="story-list" id="story-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div class="footer">
+  <div class="pirate-quote">"Not all treasure is silver and gold, mate." — Captain Jack</div>
+  <div>🏴‍☠️ MCMT Sprint Retro Board · Sprint 46 · Powered by Jira MCP + Pirate Magic</div>
+  <div style="margin-top:4px;">Generated: <span id="gen-date"></span> · Notes stored locally in your browser</div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   SPRINT DATA (baked in from Jira at generation time)
+   ═══════════════════════════════════════════════════════════ */
+const SPRINT = {
+  id: 34873,
+  name: "MCM — Sprint 46",
+  goal: "Release the BU Packs!",
+  start: "2026-04-28",
+  end: "2026-05-07",
+  project: "MCMT",
+  jiraBase: "https://legogroup.atlassian.net/browse/"
+};
+
+const ISSUES = [{"key":"MCMT-2781","summary":"Create Azure app registration for MS Graph MCP integration","status":"To Do","statusCategory":"To Do","type":"Bug","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2548","summary":"BU Pack Review — BU WE B2B eCommerce","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2547","summary":"BU Pack Review — BU USA","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2546","summary":"BU Pack Review — BU United Kingdom / Ireland","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2545","summary":"BU Pack Review — BU Türkiye, Caucasus & Central Asia","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2544","summary":"BU Pack Review — BU Singapore/Malaysia/TR","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2543","summary":"BU Pack Review — BU Romania, Israel, Bulgaria","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2542","summary":"BU Pack Review — BU Poland, Ukraine & Baltics","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2541","summary":"BU Pack Review — BU Nordics","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2540","summary":"BU Pack Review — BU Mexico","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2539","summary":"BU Pack Review — BU Middle-East & Africa","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2538","summary":"BU Pack Review — BU Korea","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2537","summary":"BU Pack Review — BU Japan","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2536","summary":"BU Pack Review — BU Italy","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2535","summary":"BU Pack Review — BU India/Emerging Asia","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2534","summary":"BU Pack Review — BU Hong Kong/Taiwan","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2533","summary":"BU Pack Review — BU Hungary, Greece, Adriatics","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2532","summary":"BU Pack Review — BU France Iberia","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2531","summary":"BU Pack Review — BU Europe Central","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2530","summary":"BU Pack Review — BU Czech Republic and Slovakia","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2529","summary":"BU Pack Review — BU China","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2528","summary":"BU Pack Review — BU Canada","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2527","summary":"BU Pack Review — BU BENELUX","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2526","summary":"BU Pack Review — BU Australia/New Zealand","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2525","summary":"BU Pack Review — BU Americas B2B eCommerce","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2524","summary":"BU Pack Review — BU Americas","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2497","summary":"Run meeting with Claire to establish the current state of Role Families","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2496","summary":"BUMBL Roadmap for May","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2495","summary":"Review of functional pack content","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2494","summary":"Write the Arch Framework","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2493","summary":"Create BU Pack Pages","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2492","summary":"Create Agents in Copilot for easy sharing","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2491","summary":"Iteration on As Is Org Chart","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2490","summary":"Meeting with Jens on DP marketing set up","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2489","summary":"Functional Pack Template for Sales","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2488","summary":"Migrate page to SharePoint","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2487","summary":"BU Pack Template Refinement","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2486","summary":"BU Pack Section 2 Text","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2485","summary":"BU Pack Section 3 Text Adjustments","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2484","summary":"BU Pack Section 1 Adjustments","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2483","summary":"Build the website-Findings Section 2 BUMBL","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2482","summary":"MCCM Agent Brick Page","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2481","summary":"Build the Maturity Clustering analysis","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2480","summary":"Finalise the Marketing Operating Complexity Modeling","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2479","summary":"Draft the functional pack for trade","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2477","summary":"Central hub for MCCM on the usage of agents","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2470","summary":"Merger of versions for marketing roles + Workload","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2469","summary":"Reconnect Camilla and align on rest of year","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2468","summary":"Expenses","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]},{"key":"MCMT-2467","summary":"Push update of MCCM DLs to all owners","status":"To Do","statusCategory":"To Do","type":"Story","priority":"Medium","assignee":"Unassigned","labels":[]}];
+
+/* ═══════════════════════════════════════════════════════════
+   NOTES SYSTEM — localStorage-backed
+   ═══════════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'mcmt-retro-sprint46';
+const COLUMNS = ['fruits', 'claire', 'gold', 'pirates', 'bottle'];
+
+function loadNotes() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch { return {}; }
+}
+
+function saveAllNotes(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function getNotes(col) {
+  const data = loadNotes();
+  return data[col] || [];
+}
+
+function addNote(col, text, author) {
+  const data = loadNotes();
+  if (!data[col]) data[col] = [];
+  data[col].push({
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2, 4),
+    text: text,
+    author: author || 'Anonymous Pirate',
+    timestamp: new Date().toISOString(),
+    votes: 0,
+    voted: false
+  });
+  saveAllNotes(data);
+}
+
+function deleteNote(col, noteId) {
+  const data = loadNotes();
+  if (data[col]) {
+    data[col] = data[col].filter(n => n.id !== noteId);
+    saveAllNotes(data);
+  }
+}
+
+function toggleVote(col, noteId) {
+  const data = loadNotes();
+  if (data[col]) {
+    const note = data[col].find(n => n.id === noteId);
+    if (note) {
+      note.voted = !note.voted;
+      note.votes = note.voted ? (note.votes || 0) + 1 : Math.max(0, (note.votes || 0) - 1);
+      saveAllNotes(data);
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDERING
+   ═══════════════════════════════════════════════════════════ */
+function renderColumn(col) {
+  const notes = getNotes(col);
+  const list = document.querySelector(`[data-notes="${col}"]`);
+  const counter = document.querySelector(`[data-count="${col}"]`);
+  counter.textContent = notes.length;
+
+  if (notes.length === 0) {
+    const msgs = {
+      fruits: 'No fruits harvested yet...',
+      claire: 'No topics raised yet...',
+      gold: 'No gold discovered yet...',
+      pirates: 'No storms reported yet...',
+      bottle: 'No messages cast yet...'
+    };
+    list.innerHTML = `<div class="empty-state">${msgs[col]}</div>`;
+    return;
+  }
+
+  list.innerHTML = notes.map(n => `
+    <div class="note-card" data-id="${n.id}">
+      <div class="note-text">${escapeHtml(n.text)}</div>
+      <div class="note-meta">
+        <span class="note-author">🏴‍☠️ ${escapeHtml(n.author)}</span>
+        <div class="note-actions">
+          <button class="note-btn vote-btn ${n.voted ? 'voted' : ''}"
+                  onclick="handleVote('${col}','${n.id}')"
+                  title="Vote">👍 ${n.votes || 0}</button>
+          <button class="note-btn delete-btn"
+                  onclick="handleDelete('${col}','${n.id}')"
+                  title="Delete">✕</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAllColumns() {
+  COLUMNS.forEach(col => renderColumn(col));
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INTERACTIONS
+   ═══════════════════════════════════════════════════════════ */
+function showForm(col) {
+  document.getElementById(`form-${col}`).classList.add('active');
+  document.getElementById(`text-${col}`).focus();
+  // hide the add button
+  document.getElementById(`form-${col}`).previousElementSibling.style.display = 'none';
+}
+
+function hideForm(col) {
+  document.getElementById(`form-${col}`).classList.remove('active');
+  document.getElementById(`text-${col}`).value = '';
+  document.getElementById(`author-${col}`).value = '';
+  document.getElementById(`form-${col}`).previousElementSibling.style.display = '';
+}
+
+function saveNote(col) {
+  const text = document.getElementById(`text-${col}`).value.trim();
+  if (!text) return;
+  const author = document.getElementById(`author-${col}`).value.trim();
+  addNote(col, text, author);
+  hideForm(col);
+  renderColumn(col);
+  showToast('🏴‍☠️ Note added to the board!');
+}
+
+function handleVote(col, noteId) {
+  toggleVote(col, noteId);
+  renderColumn(col);
+}
+
+function handleDelete(col, noteId) {
+  if (confirm('Walk the plank? This note will be deleted forever!')) {
+    deleteNote(col, noteId);
+    renderColumn(col);
+    showToast('💀 Note walked the plank!');
+  }
+}
+
+function exportNotes() {
+  const data = loadNotes();
+  const storyData = loadStoryNotes();
+  const exportObj = {
+    sprint: SPRINT,
+    exported: new Date().toISOString(),
+    columns: {},
+    storyNotes: {}
+  };
+  COLUMNS.forEach(col => {
+    const labels = {
+      fruits: 'Sweet Fruits — What went well',
+      claire: 'Discuss with Claire',
+      gold: 'Hidden Gold — Shout-outs',
+      pirates: 'Pirates on the Shore — What didn\'t go well',
+      bottle: 'Message in a Bottle — Action points'
+    };
+    exportObj.columns[col] = {
+      label: labels[col],
+      notes: data[col] || []
+    };
+  });
+  // Include story notes with issue context
+  Object.keys(storyData).forEach(key => {
+    const issue = ISSUES.find(i => i.key === key);
+    exportObj.storyNotes[key] = {
+      summary: issue ? issue.summary : key,
+      type: issue ? issue.type : 'Unknown',
+      status: issue ? issue.status : 'Unknown',
+      notes: storyData[key]
+    };
+  });
+  const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `retro-sprint-${SPRINT.id}-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 Notes exported! Check your downloads.');
+}
+
+function clearAllNotes() {
+  const data = loadNotes();
+  const storyData = loadStoryNotes();
+  const retroTotal = COLUMNS.reduce((sum, col) => sum + (data[col]?.length || 0), 0);
+  const storyTotal = Object.values(storyData).reduce((sum, arr) => sum + arr.length, 0);
+  const total = retroTotal + storyTotal;
+  if (total === 0) {
+    showToast('The board is already empty, Captain!');
+    return;
+  }
+  if (confirm(`⚠️ Arr! This will delete ${total} note(s) (${retroTotal} retro + ${storyTotal} story notes). Are ye sure?`)) {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORY_STORAGE_KEY);
+    renderAllColumns();
+    renderStoryList(document.getElementById('story-search').value);
+    showToast('🗑️ All notes cleared!');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STORY NOTES SYSTEM — localStorage-backed per-story notes
+   ═══════════════════════════════════════════════════════════ */
+const STORY_STORAGE_KEY = 'mcmt-retro-sprint46-stories';
+
+function loadStoryNotes() {
+  try { return JSON.parse(localStorage.getItem(STORY_STORAGE_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveStoryNotes(data) {
+  localStorage.setItem(STORY_STORAGE_KEY, JSON.stringify(data));
+}
+
+function getStoryNotes(issueKey) {
+  return loadStoryNotes()[issueKey] || [];
+}
+
+function addStoryNote(issueKey, text) {
+  const data = loadStoryNotes();
+  if (!data[issueKey]) data[issueKey] = [];
+  data[issueKey].push({
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2, 4),
+    text: text,
+    timestamp: new Date().toISOString()
+  });
+  saveStoryNotes(data);
+}
+
+function deleteStoryNote(issueKey, noteId) {
+  const data = loadStoryNotes();
+  if (data[issueKey]) {
+    data[issueKey] = data[issueKey].filter(n => n.id !== noteId);
+    if (data[issueKey].length === 0) delete data[issueKey];
+    saveStoryNotes(data);
+  }
+}
+
+function renderStoryList(filter) {
+  const container = document.getElementById('story-list');
+  const search = (filter || '').toLowerCase();
+  const filtered = ISSUES.filter(i =>
+    !search || i.key.toLowerCase().includes(search) || i.summary.toLowerCase().includes(search)
+  );
+  document.getElementById('story-filter-badge').textContent =
+    filtered.length === ISSUES.length ? `${ISSUES.length} quests` : `${filtered.length} of ${ISSUES.length} quests`;
+
+  container.innerHTML = filtered.map(i => {
+    const notes = getStoryNotes(i.key);
+    const typeIcon = i.type === 'Bug' ? '🐛' : i.type === 'Story' ? '📖' : i.type === 'Epic' ? '🎯' : '📋';
+    const statusClass = i.statusCategory === 'Done' ? 'status-done' :
+                         i.statusCategory === 'In Progress' ? 'status-progress' : 'status-todo';
+
+    const notesHtml = notes.length > 0
+      ? notes.map(n => `
+          <div class="story-note-card">
+            <div class="story-note-text">${escapeHtml(n.text)}</div>
+            <div class="story-note-meta">
+              <span>${new Date(n.timestamp).toLocaleString()}</span>
+              <button class="story-delete-btn" onclick="event.stopPropagation(); handleDeleteStoryNote('${i.key}','${n.id}')" title="Delete">✕</button>
+            </div>
+          </div>`).join('')
+      : '<div class="story-empty">No crew notes yet — add one below ⬇️</div>';
+
+    return `
+      <div class="story-row" id="story-${i.key}">
+        <div class="story-header" onclick="toggleStory('${i.key}')">
+          <span class="story-key"><a href="${SPRINT.jiraBase}${i.key}" target="_blank" onclick="event.stopPropagation()">${i.key}</a></span>
+          <span class="story-summary">${typeIcon} ${escapeHtml(i.summary)}</span>
+          <span class="story-note-count ${notes.length > 0 ? 'has-notes' : ''}">${notes.length} 📝</span>
+          <span class="story-expand" id="expand-${i.key}">▶</span>
+        </div>
+        <div class="story-detail" id="detail-${i.key}">
+          <div class="story-detail-meta">
+            <span><span class="status-badge ${statusClass}">${i.status}</span></span>
+            <span>${typeIcon} ${i.type}</span>
+            <span>Pirate: ${i.assignee === 'Unassigned' ? '<em>Unassigned</em>' : escapeHtml(i.assignee)}</span>
+          </div>
+          <div class="story-notes-list" id="notes-${i.key}">${notesHtml}</div>
+          <div class="story-add-form">
+            <textarea placeholder="Add a note about this quest..." id="story-text-${i.key}" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();handleAddStoryNote('${i.key}');}"></textarea>
+            <button class="story-add-btn" onclick="handleAddStoryNote('${i.key}')">📝 Add</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleStory(key) {
+  const detail = document.getElementById(`detail-${key}`);
+  const expand = document.getElementById(`expand-${key}`);
+  detail.classList.toggle('open');
+  expand.classList.toggle('open');
+}
+
+function handleAddStoryNote(key) {
+  const textarea = document.getElementById(`story-text-${key}`);
+  const text = textarea.value.trim();
+  if (!text) return;
+  addStoryNote(key, text);
+  textarea.value = '';
+  renderStoryList(document.getElementById('story-search').value);
+  // Re-open the story we just added to
+  const detail = document.getElementById(`detail-${key}`);
+  const expand = document.getElementById(`expand-${key}`);
+  if (detail && !detail.classList.contains('open')) {
+    detail.classList.add('open');
+    expand.classList.add('open');
+  }
+  showToast('📝 Note added to quest!');
+}
+
+function handleDeleteStoryNote(key, noteId) {
+  if (confirm('Delete this note?')) {
+    deleteStoryNote(key, noteId);
+    renderStoryList(document.getElementById('story-search').value);
+    // Keep story open
+    const detail = document.getElementById(`detail-${key}`);
+    const expand = document.getElementById(`expand-${key}`);
+    if (detail) { detail.classList.add('open'); expand.classList.add('open'); }
+    showToast('🗑️ Note removed.');
+  }
+}
+
+function filterStories() {
+  // Remember which stories are open
+  renderStoryList(document.getElementById('story-search').value);
+}
+
+function toggleBacklog() {
+  const content = document.getElementById('backlog-content');
+  const chevron = document.getElementById('backlog-chevron');
+  content.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   KPI CALCULATIONS
+   ═══════════════════════════════════════════════════════════ */
+function updateKPIs() {
+  const stats = { done: 0, progress: 0, todo: 0 };
+  ISSUES.forEach(i => {
+    if (i.statusCategory === 'Done') stats.done++;
+    else if (i.statusCategory === 'In Progress') stats.progress++;
+    else stats.todo++;
+  });
+  document.getElementById('kpi-total').textContent = ISSUES.length;
+  document.getElementById('kpi-done').textContent = stats.done;
+  document.getElementById('kpi-progress').textContent = stats.progress;
+  document.getElementById('kpi-todo').textContent = stats.todo;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════ */
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+   ═══════════════════════════════════════════════════════════ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    COLUMNS.forEach(col => hideForm(col));
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════ */
+document.getElementById('gen-date').textContent = new Date().toLocaleString();
+updateKPIs();
+renderStoryList();
+renderAllColumns();
+</script>
+</body>
+</html>
