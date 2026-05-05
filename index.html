@@ -927,7 +927,7 @@ function buildPickerHTML(filter) {
 
     const epicLabel = EPICS[ek].length > 50 ? EPICS[ek].substring(0,50)+'…' : EPICS[ek];
     html += '<div class="sp-epic">';
-    html += '<div class="sp-epic-head" onclick="this.classList.toggle('collapsed')"><span class="sp-arrow">▼</span> 🎯 ' + esc(epicLabel) + ' <span style="font-weight:400;opacity:0.6;">(' + items.length + ')</span></div>';
+    html += '<div class="sp-epic-head" onclick="this.classList.toggle(&quot;collapsed&quot;)"><span class="sp-arrow">▼</span> 🎯 ' + esc(epicLabel) + ' <span style="font-weight:400;opacity:0.6;">(' + items.length + ')</span></div>';
     html += '<div class="sp-epic-items">';
     items.forEach(i => {
       const sc = i.statusCategory === 'Done' ? 'done' : (i.statusCategory === 'In Progress' ? 'ip' : 'todo');
@@ -942,7 +942,7 @@ function buildPickerHTML(filter) {
     );
     if (items.length) {
       anyMatch = true;
-      html += '<div class="sp-epic"><div class="sp-epic-head" onclick="this.classList.toggle('collapsed')"><span class="sp-arrow">▼</span> 📋 No Epic <span style="font-weight:400;opacity:0.6;">(' + items.length + ')</span></div>';
+      html += '<div class="sp-epic"><div class="sp-epic-head" onclick="this.classList.toggle(&quot;collapsed&quot;)"><span class="sp-arrow">▼</span> 📋 No Epic <span style="font-weight:400;opacity:0.6;">(' + items.length + ')</span></div>';
       html += '<div class="sp-epic-items">';
       items.forEach(i => {
         const sc = i.statusCategory === 'Done' ? 'done' : (i.statusCategory === 'In Progress' ? 'ip' : 'todo');
@@ -1337,7 +1337,7 @@ function renderPlan() {
         const keys = linkedByEpic[ek];
         const totalNotes = keys.reduce((sum,k) => sum + byStory[k].length, 0);
         return '<div class="plan-epic-card">' +
-          '<div class="plan-epic-head" onclick="this.classList.toggle('collapsed')">' +
+          '<div class="plan-epic-head" onclick="this.classList.toggle(&quot;collapsed&quot;)">' +
             '<span class="epic-emoji">🎯</span>' +
             '<span class="epic-name">' + esc(epicName) + '</span>' +
             '<span class="epic-badge">' + keys.length + ' quest' + (keys.length!==1?'s':'') + ' · ' + totalNotes + ' note' + (totalNotes!==1?'s':'') + '</span>' +
