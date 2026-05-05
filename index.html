@@ -243,7 +243,7 @@
     display: flex;
     flex-direction: column;
     box-shadow: var(--shadow);
-    overflow: hidden;
+    overflow: visible;
   }
   .col-head {
     padding: 14px 16px 10px;
@@ -671,19 +671,16 @@
   .story-picker-trigger.has-value .sp-value { color: var(--text); font-weight: 500; }
   .story-picker-dropdown {
     display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 200;
+    position: fixed;
+    z-index: 9999;
     background: var(--card);
     border: 1px solid var(--gold);
     border-radius: 10px;
     box-shadow: var(--shadow-lg);
-    max-height: 320px;
+    max-height: 350px;
+    width: 340px;
     overflow: hidden;
     flex-direction: column;
-    margin-top: 4px;
   }
   .story-picker-dropdown.open { display: flex; }
   .sp-search {
@@ -962,10 +959,14 @@ function togglePicker(col) {
   // Close all pickers first
   document.querySelectorAll('.story-picker-dropdown').forEach(d => d.classList.remove('open'));
   if (!isOpen) {
+    const trigger = document.querySelector('#picker-' + col + ' .story-picker-trigger');
+    const rect = trigger.getBoundingClientRect();
+    dd.style.left = rect.left + 'px';
+    dd.style.top = (rect.bottom + 4) + 'px';
+    dd.style.width = Math.max(340, rect.width) + 'px';
     dd.classList.add('open');
     const list = document.getElementById('splist-' + col);
     list.innerHTML = buildPickerHTML('');
-    // Attach click handlers
     list.querySelectorAll('.sp-item').forEach(item => {
       item.addEventListener('click', () => selectPickerItem(col, item.dataset.key));
     });
