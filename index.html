@@ -1377,6 +1377,7 @@ function closeForm(col) {
   document.querySelectorAll('.story-picker-dropdown').forEach(d => d.classList.remove('open'));
 }
 function submitNote(col) {
+  if (_locked) { toast('🔒 Board is locked — voyage is complete!'); return; }
   const text = document.getElementById(`text-${col}`).value.trim();
   if (!text) return;
   const linkedKey = document.getElementById(`link-${col}`).value;
@@ -1385,8 +1386,9 @@ function submitNote(col) {
   renderBoard();
   toast('🏴‍☠️ Note added!');
 }
-function doVote(col, nid) { voteNote(col, nid); renderBoard(); }
+function doVote(col, nid) { if (_locked) return; voteNote(col, nid); renderBoard(); }
 function doDelete(col, nid) {
+  if (_locked) return;
   if (confirm('Walk the plank? 💀')) { deleteNoteData(col, nid); renderBoard(); toast('💀 Gone!'); }
 }
 
@@ -1564,6 +1566,25 @@ function closeEndVoyage() {
 }
 
 let _exportTime = null;
+let _locked = false;
+
+function lockBoard() {
+  _locked = true;
+  // Hide all add-note areas and delete/vote buttons
+  document.querySelectorAll('.add-area').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.n-btn').forEach(el => el.style.display = 'none');
+  // Hide the End Voyage button itself
+  document.querySelector('.end-voyage-btn').style.display = 'none';
+  // Add a locked banner
+  const bar = document.getElementById('crew-bar');
+  if (bar && !document.getElementById('locked-banner')) {
+    const banner = document.createElement('span');
+    banner.id = 'locked-banner';
+    banner.style.cssText = 'margin-left:auto;color:var(--green);font-weight:600;font-size:12px;';
+    banner.textContent = '🔒 Voyage complete — board is read-only';
+    bar.appendChild(banner);
+  }
+}
 
 function saveToObsidian() {
   const btn = document.getElementById('modal-save-btn');
@@ -1597,6 +1618,11 @@ function saveToObsidian() {
         progress.innerHTML = '✅ Saved to Obsidian! <br><span style="font-size:12px;color:var(--text-muted);">📁 ' + saved.path + '</span>';
         btn.textContent = '✅ Voyage Complete!';
         btn.style.background = 'linear-gradient(135deg, #2d7a3a, #27ae60)';
+        // Show close button and lock the board
+        cancelBtn.style.display = '';
+        cancelBtn.textContent = '✕ Close';
+        cancelBtn.onclick = function() { closeEndVoyage(); };
+        lockBoard();
         toast('⚓ Notes saved to Obsidian!');
       }
     });
