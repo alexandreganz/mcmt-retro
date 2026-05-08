@@ -575,6 +575,18 @@
   .col-gold .note { background: var(--gold-bg); border-left: 3px solid var(--gold); }
   .col-pirates .note { background: var(--red-bg); border-left: 3px solid var(--red); }
   .col-bottle .note { background: var(--purple-bg); border-left: 3px solid var(--purple); }
+
+  /* Author color stripe */
+  .note[data-author-color] { border-right: 4px solid var(--author-clr); }
+  .note .author-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    margin-right: 4px; vertical-align: middle; background: var(--author-clr);
+  }
+  .pn-card[data-author-color] { border-right: 4px solid var(--author-clr); }
+  .pn-author .author-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    margin-right: 3px; vertical-align: middle;
+  }
   .note-body { font-size: 13px; line-height: 1.5; word-wrap: break-word; }
   .note-linked {
     display: inline-flex;
@@ -1523,6 +1535,21 @@ function load() { return _cache; }
 function getNotes(col) { return (_cache[col] || []); }
 function allNotes() { let all = []; COLS.forEach(c => (_cache[c.id]||[]).forEach(n => all.push({...n, col: c.id}))); return all; }
 
+/* ── Author Colors ── */
+const AUTHOR_PALETTE = [
+  '#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6',
+  '#1abc9c','#e67e22','#e84393','#00cec9','#6c5ce7',
+  '#fd79a8','#00b894','#fdcb6e','#74b9ff','#a29bfe'
+];
+const _authorColorMap = {};
+function authorColor(name) {
+  if (!name) return AUTHOR_PALETTE[0];
+  if (_authorColorMap[name]) return _authorColorMap[name];
+  const idx = Object.keys(_authorColorMap).length % AUTHOR_PALETTE.length;
+  _authorColorMap[name] = AUTHOR_PALETTE[idx];
+  return _authorColorMap[name];
+}
+
 // Real-time listener — syncs all users
 function isUserInteracting() {
   return document.querySelector('.add-form.open') ||
@@ -1684,38 +1711,43 @@ function jumpToIsland(idx) {
 
 /* ═══════════════════════════════════════════
    ISLAND TIMER (3 min per stop, +1 min extension)
+   Synced across all users via Firebase
    ═══════════════════════════════════════════ */
 const TIMER_BASE = 3 * 60;      // 3 minutes
 const TIMER_EXTEND = 1 * 60;    // +1 minute
 const TIMER_MAX_EXTEND = 1;     // only 1 extension allowed
-let _timerSeconds = TIMER_BASE;
 let _timerRemaining = TIMER_BASE;
 let _timerInterval = null;
 let _timerRunning = false;
 let _timerExtensions = 0;
+let _timerEndAt = null;  // timestamp when timer reaches 0
 
 function resetTimer() {
   stopTimerInterval();
-  _timerSeconds = TIMER_BASE;
   _timerRemaining = TIMER_BASE;
   _timerRunning = false;
   _timerExtensions = 0;
+  _timerEndAt = null;
+  syncTimerToFirebase();
 }
 
 function startTimer() {
   if (_timerRunning) return;
   _timerRunning = true;
+  _timerEndAt = Date.now() + _timerRemaining * 1000;
   _timerInterval = setInterval(() => {
-    _timerRemaining--;
+    _timerRemaining = Math.round((_timerEndAt - Date.now()) / 1000);
     updateTimerDisplay();
     if (_timerRemaining <= 0) {
+      _timerRemaining = 0;
       stopTimerInterval();
       _timerRunning = false;
       updateTimerDisplay();
       toast('⏰ Time\'s up, matey! Move to the next stop!');
     }
-  }, 1000);
+  }, 250);
   updateTimerDisplay();
+  syncTimerToFirebase();
 }
 
 function stopTimerInterval() {
@@ -1728,6 +1760,8 @@ function stopTimerInterval() {
 function stopTimer() {
   stopTimerInterval();
   _timerRunning = false;
+  _timerEndAt = null;
+  syncTimerToFirebase();
   updateTimerDisplay();
 }
 
@@ -1735,13 +1769,63 @@ function extendTimer() {
   if (_timerExtensions >= TIMER_MAX_EXTEND) return;
   _timerExtensions++;
   _timerRemaining += TIMER_EXTEND;
-  _timerSeconds += TIMER_EXTEND;
+  if (_timerEndAt) _timerEndAt += TIMER_EXTEND * 1000;
   if (!_timerRunning && _timerRemaining > 0) {
     startTimer();
+    return; // startTimer calls syncTimerToFirebase
   }
+  syncTimerToFirebase();
   updateTimerDisplay();
   toast('⏳ +1 minute added! Last chance, crew!');
 }
+
+function syncTimerToFirebase() {
+  db.ref(RETRO_PATH + '/timer').set({
+    running: _timerRunning,
+    endAt: _timerEndAt || null,
+    remaining: _timerRemaining,
+    extensions: _timerExtensions,
+    stop: _currentStop,
+    updatedBy: currentUser(),
+    updatedAt: Date.now()
+  });
+}
+
+// Listen for timer changes from other users
+db.ref(RETRO_PATH + '/timer').on('value', snap => {
+  const t = snap.val();
+  if (!t) return;
+  // Only sync if another user changed it
+  if (t.updatedBy === currentUser() && Math.abs(Date.now() - t.updatedAt) < 2000) return;
+
+  _timerExtensions = t.extensions || 0;
+
+  if (t.running && t.endAt) {
+    _timerEndAt = t.endAt;
+    _timerRemaining = Math.max(0, Math.round((t.endAt - Date.now()) / 1000));
+    if (!_timerRunning) {
+      _timerRunning = true;
+      stopTimerInterval();
+      _timerInterval = setInterval(() => {
+        _timerRemaining = Math.round((_timerEndAt - Date.now()) / 1000);
+        updateTimerDisplay();
+        if (_timerRemaining <= 0) {
+          _timerRemaining = 0;
+          stopTimerInterval();
+          _timerRunning = false;
+          updateTimerDisplay();
+          toast('⏰ Time\'s up, matey! Move to the next stop!');
+        }
+      }, 250);
+    }
+  } else {
+    stopTimerInterval();
+    _timerRunning = false;
+    _timerRemaining = t.remaining || TIMER_BASE;
+    _timerEndAt = null;
+  }
+  updateTimerDisplay();
+});
 
 function updateTimerDisplay() {
   const display = document.getElementById('timer-display');
@@ -1755,7 +1839,8 @@ function updateTimerDisplay() {
   display.textContent = mins + ':' + secs.toString().padStart(2, '0');
 
   // Progress bar
-  const pct = Math.max(0, (_timerRemaining / _timerSeconds) * 100);
+  const totalSecs = TIMER_BASE + (_timerExtensions * TIMER_EXTEND);
+  const pct = Math.max(0, (_timerRemaining / totalSecs) * 100);
   if (bar) {
     bar.style.width = pct + '%';
     bar.className = 'timer-progress-bar' +
@@ -1782,7 +1867,7 @@ function updateTimerDisplay() {
 function renderTimerHTML() {
   const mins = Math.max(0, Math.floor(_timerRemaining / 60));
   const secs = Math.max(0, _timerRemaining % 60);
-  const pct = Math.max(0, (_timerRemaining / _timerSeconds) * 100);
+  const pct = Math.max(0, (_timerRemaining / (TIMER_BASE + _timerExtensions * TIMER_EXTEND)) * 100);
   const cls = _timerRemaining <= 0 ? 'expired' : _timerRemaining <= 30 ? 'danger' : _timerRemaining <= 60 ? 'warning' : '';
   const barCls = cls === 'expired' ? 'danger' : cls;
 
@@ -1885,11 +1970,12 @@ function renderNotes(col, notes) {
   }
   return notes.map(n => {
     const linked = n.linkedKey ? ISSUES.find(i => i.key === n.linkedKey) : null;
-    return `<div class="note">
+    const aClr = authorColor(n.author);
+    return `<div class="note" data-author-color style="--author-clr:${aClr}">
       <div class="note-body">${esc(n.text)}</div>
       ${linked ? `<div class="note-linked">🔗 <a href="${SPRINT.jira}${linked.key}" target="_blank">${linked.key}</a> ${esc(linked.summary).substring(0,40)}</div>` : ''}
       <div class="note-foot">
-        <span>🏴‍☠️ ${esc(n.author)}</span>
+        <span><span class="author-dot" style="background:${aClr}"></span>🏴‍☠️ ${esc(n.author)}</span>
         <div class="note-actions">
           <button class="n-btn ${(n.voters && n.voters[currentUser().replace(/[.#$/\[\]]/g,'_')])?'voted':''}" onclick="doVote('${col}','${n.id}')">👍 ${n.votes||0}</button>
           <button class="n-btn del" onclick="doDelete('${col}','${n.id}')">✕</button>
@@ -2126,8 +2212,9 @@ function renderNoteCard(n, draggable) {
 
   const dragAttr = draggable ? ' draggable="true" data-note-id="' + n.id + '"' : '';
   const dragClass = draggable ? ' pn-draggable' : '';
+  const aClr = authorColor(n.author);
 
-  return '<div class="pn-card' + dragClass + '"' + dragAttr + '>' +
+  return '<div class="pn-card' + dragClass + '"' + dragAttr + ' data-author-color style="--author-clr:' + aClr + '">' +
     '<div class="pn-votes' + ((n.votes||0) === 0 ? ' pn-votes-zero' : '') + '">' +
       '<span class="pn-votes-num">' + (n.votes||0) + '</span>' +
       '<span class="pn-votes-label">votes</span>' +
@@ -2135,7 +2222,7 @@ function renderNoteCard(n, draggable) {
     '<div class="pn-body">' +
       '<div class="pn-text">' + esc(n.text) + '</div>' +
       '<div class="pn-meta">' +
-        '<span class="pn-author">— ' + esc(n.author) + '</span>' +
+        '<span class="pn-author"><span class="author-dot" style="background:' + aClr + '"></span>— ' + esc(n.author) + '</span>' +
         linkHtml +
       '</div>' +
     '</div>' +
