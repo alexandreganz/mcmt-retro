@@ -1902,7 +1902,7 @@ function renderBoard() {
         </div>
         <span class="col-count">${notes.length}</span>
       </div>
-      <div class="notes-scroll">${renderAuthorLegend(notes)}${renderNotes(c.id, notes)}</div>
+      <div class="notes-scroll">${renderNotes(c.id, notes)}</div>
       <div class="add-area">
         <button class="add-trigger" onclick="openForm('${c.id}')" id="trigger-${c.id}">${c.btn}</button>
         <div class="add-form" id="form-${c.id}">
