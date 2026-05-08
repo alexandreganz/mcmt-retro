@@ -1424,17 +1424,26 @@ function togglePicker(col) {
 function renderAssigneeFilterBar(col) {
   const bar = document.getElementById('spfilter-' + col);
   const assignees = getUniqueAssignees();
-  let html = '<button class="sp-filter-btn' + (!_pickerAssigneeFilter ? ' active' : '') + '" onclick="setPickerAssignee(\'' + col + '\', \'\', event)">All</button>';
+  bar.innerHTML = '';
+  
+  const allBtn = document.createElement('button');
+  allBtn.className = 'sp-filter-btn' + (!_pickerAssigneeFilter ? ' active' : '');
+  allBtn.textContent = 'All';
+  allBtn.addEventListener('click', function(e) { e.stopPropagation(); setPickerAssignee(col, ''); });
+  bar.appendChild(allBtn);
+  
   assignees.forEach(a => {
     const parts = a.replace(/\s*\(.*?\)\s*/g, '').split(' ');
     const label = parts.length > 1 ? parts[0] + ' ' + parts[1].substring(0, 3) + '.' : parts[0];
-    html += '<button class="sp-filter-btn' + (_pickerAssigneeFilter === a ? ' active' : '') + '" onclick="setPickerAssignee(\'' + col + '\', \'' + esc(a).replace(/'/g, "\\'") + '\', event)">' + esc(label) + '</button>';
+    const btn = document.createElement('button');
+    btn.className = 'sp-filter-btn' + (_pickerAssigneeFilter === a ? ' active' : '');
+    btn.textContent = label;
+    btn.addEventListener('click', function(e) { e.stopPropagation(); setPickerAssignee(col, a); });
+    bar.appendChild(btn);
   });
-  bar.innerHTML = html;
 }
 
-function setPickerAssignee(col, assignee, evt) {
-  if (evt) evt.stopPropagation();
+function setPickerAssignee(col, assignee) {
   _pickerAssigneeFilter = assignee;
   renderAssigneeFilterBar(col);
   const q = document.querySelector('#spdd-' + col + ' .sp-search').value;
