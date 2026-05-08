@@ -2020,7 +2020,7 @@ function renderNotes(col, notes) {
         <div class="note-actions">
           ${isGold ? `<button class="n-btn comment-btn" onclick="document.getElementById('cmt-${n.id}').focus()">💬 ${comments.length || ''}</button>` : ''}
           <button class="n-btn ${(n.voters && n.voters[currentUser().replace(/[.#$/\[\]]/g,'_')])?'voted':''}" onclick="doVote('${col}','${n.id}')">👍 ${n.votes||0}</button>
-          <button class="n-btn del" onclick="doDelete('${col}','${n.id}')">✕</button>
+          ${n.author === currentUser() ? `<button class="n-btn del" onclick="doDelete('${col}','${n.id}')">✕</button>` : ''}
         </div>
       </div>
     </div>`;
