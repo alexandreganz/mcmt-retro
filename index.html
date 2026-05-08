@@ -562,6 +562,27 @@
     border: 1px solid rgba(0,0,0,0.1);
   }
   .note-body { font-size: 13px; line-height: 1.5; word-wrap: break-word; }
+
+  /* Comments (gold column only) */
+  .note-comments { margin-top: 8px; border-top: 1px dashed var(--border-light); padding-top: 6px; }
+  .note-comment {
+    font-size: 11px; line-height: 1.4; padding: 4px 8px; margin: 3px 0;
+    background: rgba(255,215,0,0.08); border-radius: 6px; border-left: 2px solid var(--gold);
+  }
+  .note-comment-author { font-weight: 600; color: var(--gold); margin-right: 4px; }
+  .note-comment-form {
+    display: flex; gap: 4px; margin-top: 6px;
+  }
+  .note-comment-form input {
+    flex: 1; font-size: 11px; padding: 4px 8px; border-radius: 6px;
+    border: 1px solid var(--border-light); background: var(--bg); color: var(--text);
+    font-family: 'Inter', sans-serif;
+  }
+  .note-comment-form button {
+    font-size: 11px; padding: 4px 8px; border-radius: 6px; border: none;
+    background: var(--gold); color: #1a1a2e; cursor: pointer; font-weight: 600;
+  }
+  .n-btn.comment-btn { color: var(--gold); }
   .note-linked {
     display: inline-flex;
     align-items: center;
@@ -1537,7 +1558,7 @@ function authorColor(name) {
 function isUserInteracting() {
   return document.querySelector('.add-form.open') ||
          document.querySelector('.story-picker-dropdown.open') ||
-         document.activeElement?.matches('.add-form textarea, .sp-search');
+         document.activeElement?.matches('.add-form textarea, .sp-search, .note-comment-form input');
 }
 
 db.ref(RETRO_PATH + '/notes').on('value', snap => {
@@ -1592,6 +1613,23 @@ function voteNote(col, nid) {
       return n;
     });
   });
+}
+
+function addComment(col, nid) {
+  const input = document.getElementById('cmt-' + nid);
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  db.ref(RETRO_PATH + '/notes/' + col).transaction(arr => {
+    if (!arr) return arr;
+    return arr.map(n => {
+      if (!n || n.id !== nid) return n;
+      if (!n.comments) n.comments = [];
+      n.comments.push({ author: currentUser(), text: text, ts: Date.now() });
+      return n;
+    });
+  });
+  input.value = '';
 }
 
 function currentUser() { return localStorage.getItem(NAME_KEY) || 'Anonymous Pirate'; }
@@ -1962,12 +2000,29 @@ function renderNotes(col, notes) {
   return notes.map(n => {
     const linked = n.linkedKey ? ISSUES.find(i => i.key === n.linkedKey) : null;
     const aClr = authorColor(n.author);
+    const comments = n.comments || [];
+    const isGold = col === 'gold';
+    let commentsHTML = '';
+    if (isGold) {
+      commentsHTML = '<div class="note-comments">';
+      if (comments.length) {
+        commentsHTML += comments.map(c =>
+          `<div class="note-comment"><span class="note-comment-author"><span class="author-dot" style="background:${authorColor(c.author)}"></span>${esc(c.author)}:</span> ${esc(c.text)}</div>`
+        ).join('');
+      }
+      commentsHTML += `<div class="note-comment-form">
+        <input type="text" id="cmt-${n.id}" placeholder="Add a comment..." onkeydown="if(event.key==='Enter'){addComment('${col}','${n.id}');event.stopPropagation()}" onclick="event.stopPropagation()">
+        <button onclick="addComment('${col}','${n.id}')">💬</button>
+      </div></div>`;
+    }
     return `<div class="note" data-author-color style="--author-clr:${aClr}">
       <div class="note-body">${esc(n.text)}</div>
       ${linked ? `<div class="note-linked">🔗 <a href="${SPRINT.jira}${linked.key}" target="_blank">${linked.key}</a> ${esc(linked.summary).substring(0,40)}</div>` : ''}
+      ${commentsHTML}
       <div class="note-foot">
         <span><span class="author-dot" style="background:${aClr}"></span>🏴‍☠️ ${esc(n.author)}</span>
         <div class="note-actions">
+          ${isGold ? `<button class="n-btn comment-btn" onclick="document.getElementById('cmt-${n.id}').focus()">💬 ${comments.length || ''}</button>` : ''}
           <button class="n-btn ${(n.voters && n.voters[currentUser().replace(/[.#$/\[\]]/g,'_')])?'voted':''}" onclick="doVote('${col}','${n.id}')">👍 ${n.votes||0}</button>
           <button class="n-btn del" onclick="doDelete('${col}','${n.id}')">✕</button>
         </div>
