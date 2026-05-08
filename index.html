@@ -531,11 +531,7 @@
     position: relative;
     border: 1px solid var(--border-light);
   }
-  .col-fruits .note { background: var(--green-bg); border-left: 3px solid var(--green); }
-  .col-claire .note { background: var(--blue-bg); border-left: 3px solid var(--blue); }
-  .col-gold .note { background: var(--gold-bg); border-left: 3px solid var(--gold); }
-  .col-pirates .note { background: var(--red-bg); border-left: 3px solid var(--red); }
-  .col-bottle .note { background: var(--purple-bg); border-left: 3px solid var(--purple); }
+  /* Note backgrounds set inline by author color */
 
   /* Author color stripe */
   .note[data-author-color] { border-right: 4px solid var(--author-clr); }
@@ -2015,7 +2011,7 @@ function renderNotes(col, notes) {
         <button onclick="addComment('${col}','${n.id}')">💬</button>
       </div></div>`;
     }
-    return `<div class="note" data-author-color style="--author-clr:${aClr}">
+    return `<div class="note" data-author-color style="--author-clr:${aClr};background:${aClr}12;border-left:3px solid ${aClr}">
       <div class="note-body">${esc(n.text)}</div>
       ${linked ? `<div class="note-linked">🔗 <a href="${SPRINT.jira}${linked.key}" target="_blank">${linked.key}</a> ${esc(linked.summary).substring(0,40)}</div>` : ''}
       ${commentsHTML}
@@ -2264,7 +2260,7 @@ function renderNoteCard(n, draggable) {
   const bg = colBg[n.col] || 'var(--bg)';
   const border = colBorder[n.col] || 'var(--border-light)';
 
-  return '<div class="pn-card' + dragClass + '"' + dragAttr + ' data-author-color style="--author-clr:' + aClr + ';background:' + bg + ';border-left:3px solid ' + border + '">' +
+  return '<div class="pn-card' + dragClass + '"' + dragAttr + ' data-author-color style="--author-clr:' + aClr + ';background:' + aClr + '12;border-left:3px solid ' + aClr + '">' +
     '<div class="pn-votes' + ((n.votes||0) === 0 ? ' pn-votes-zero' : '') + '">' +
       '<span class="pn-votes-num">' + (n.votes||0) + '</span>' +
       '<span class="pn-votes-label">votes</span>' +
