@@ -542,11 +542,24 @@
   .note .author-dot {
     display: inline-block; width: 10px; height: 10px; border-radius: 50%;
     margin-right: 4px; vertical-align: middle; background: var(--author-clr);
+    border: 1px solid rgba(0,0,0,0.1);
   }
-  .pn-card[data-author-color] { border-right: 4px solid var(--author-clr); }
+  .pn-card[data-author-color] { border-left: 4px solid var(--author-clr); }
   .pn-author .author-dot {
     display: inline-block; width: 8px; height: 8px; border-radius: 50%;
     margin-right: 3px; vertical-align: middle;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  /* Author legend in notes area */
+  .author-legend {
+    display: flex; flex-wrap: wrap; gap: 6px 12px;
+    padding: 6px 10px; font-size: 11px; color: var(--text-muted);
+  }
+  .author-legend-item { display: flex; align-items: center; gap: 4px; }
+  .author-legend-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
   }
   .note-body { font-size: 13px; line-height: 1.5; word-wrap: break-word; }
   .note-linked {
@@ -1880,7 +1893,7 @@ function renderBoard() {
         </div>
         <span class="col-count">${notes.length}</span>
       </div>
-      <div class="notes-scroll">${renderNotes(c.id, notes)}</div>
+      <div class="notes-scroll">${renderAuthorLegend(notes)}${renderNotes(c.id, notes)}</div>
       <div class="add-area">
         <button class="add-trigger" onclick="openForm('${c.id}')" id="trigger-${c.id}">${c.btn}</button>
         <div class="add-form" id="form-${c.id}">
@@ -1922,6 +1935,14 @@ function renderBoard() {
   navHTML += '</div>';
 
   board.innerHTML = '<div class="island-journey">' + mapHTML + renderTimerHTML() + colHTML + navHTML + '</div>';
+}
+
+function renderAuthorLegend(notes) {
+  const authors = [...new Set(notes.map(n => n.author).filter(Boolean))];
+  if (authors.length < 2) return '';
+  return '<div class="author-legend">' +
+    authors.map(a => '<span class="author-legend-item"><span class="author-legend-dot" style="background:' + authorColor(a) + '"></span>' + esc(a) + '</span>').join('') +
+  '</div>';
 }
 
 function renderNotes(col, notes) {
