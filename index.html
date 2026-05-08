@@ -228,14 +228,164 @@
   /* ═══ RETRO BOARD VIEW ═══ */
   .retro-view { padding: 24px 32px; }
   .board {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     min-height: 400px;
-    align-items: start;
   }
-  @media (max-width: 1200px) { .board { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 768px) { .board { grid-template-columns: 1fr; } }
+
+  /* ── Island Journey Navigation ── */
+  .island-journey {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .island-map {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 16px 24px 20px;
+    position: relative;
+  }
+  .island-stop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    min-width: 80px;
+  }
+  .island-stop:hover { background: rgba(184,134,11,0.08); }
+  .island-stop .stop-icon {
+    font-size: 32px;
+    transition: transform 0.3s ease;
+    filter: grayscale(0.6) opacity(0.5);
+  }
+  .island-stop.active .stop-icon {
+    filter: none;
+    transform: scale(1.3);
+  }
+  .island-stop.visited .stop-icon {
+    filter: grayscale(0.2) opacity(0.8);
+  }
+  .island-stop .stop-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    white-space: nowrap;
+    transition: color 0.3s;
+  }
+  .island-stop.active .stop-name {
+    color: var(--gold);
+    font-family: 'Pirata One', cursive;
+    font-size: 13px;
+  }
+  .island-stop .stop-count {
+    font-size: 9px;
+    font-weight: 700;
+    background: var(--border-light);
+    color: var(--text-muted);
+    padding: 1px 6px;
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  .island-stop.active .stop-count {
+    background: var(--gold);
+    color: #fff;
+  }
+  .island-path {
+    flex: 1;
+    height: 3px;
+    background: var(--border-light);
+    position: relative;
+    margin: 0 -4px;
+    top: -10px;
+  }
+  .island-path.sailed {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  }
+  .island-path::after {
+    content: '~';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--border);
+    font-size: 14px;
+  }
+  .island-path.sailed::after {
+    color: var(--gold);
+    content: '⛵';
+    font-size: 12px;
+    top: -12px;
+  }
+
+  /* ── Full-width single column ── */
+  .island-col-wrapper {
+    width: 100%;
+    animation: islandSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .island-col-wrapper.anim-fruits { animation-name: islandBounceIn; }
+  .island-col-wrapper.anim-claire { animation-name: islandSwingIn; }
+  .island-col-wrapper.anim-gold { animation-name: islandFlipIn; }
+  .island-col-wrapper.anim-pirates { animation-name: islandShakeIn; }
+  .island-col-wrapper.anim-bottle { animation-name: islandWaveIn; }
+
+  @keyframes islandSlideIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes islandBounceIn {
+    0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+    60% { opacity: 1; transform: translateY(-8px) scale(1.02); }
+    100% { transform: translateY(0) scale(1); }
+  }
+  @keyframes islandSwingIn {
+    0% { opacity: 0; transform: rotate(-3deg) translateX(-30px); }
+    60% { opacity: 1; transform: rotate(1deg) translateX(5px); }
+    100% { transform: rotate(0) translateX(0); }
+  }
+  @keyframes islandFlipIn {
+    0% { opacity: 0; transform: perspective(600px) rotateY(-15deg) scale(0.9); }
+    60% { opacity: 1; transform: perspective(600px) rotateY(3deg) scale(1.01); }
+    100% { transform: perspective(600px) rotateY(0) scale(1); }
+  }
+  @keyframes islandShakeIn {
+    0% { opacity: 0; transform: translateX(-20px); }
+    25% { transform: translateX(10px); }
+    50% { transform: translateX(-5px); }
+    75% { opacity: 1; transform: translateX(3px); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes islandWaveIn {
+    0% { opacity: 0; transform: translateY(30px) rotate(2deg); }
+    30% { transform: translateY(-5px) rotate(-1deg); }
+    60% { transform: translateY(3px) rotate(0.5deg); }
+    100% { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  /* Emoji splash on navigation */
+  .island-splash {
+    position: fixed;
+    top: 50%; left: 50%;
+    font-size: 80px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: splashPop 0.8s ease forwards;
+  }
+  @keyframes splashPop {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(-10deg); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(5deg); }
+    70% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1) rotate(-2deg); }
+    100% { opacity: 0; transform: translate(-50%, -60%) scale(0.8) rotate(0); }
+  }
 
   .retro-col {
     background: var(--card);
@@ -246,32 +396,145 @@
     box-shadow: var(--shadow);
     overflow: visible;
     min-width: 0;
+    width: 100%;
   }
   .col-head {
-    padding: 14px 16px 10px;
+    padding: 20px 24px 14px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
   }
-  .col-emoji { font-size: 24px; }
+  .col-emoji { font-size: 36px; }
   .col-info { flex: 1; }
   .col-info h3 {
     font-family: 'Pirata One', cursive;
-    font-size: 18px;
+    font-size: 26px;
     line-height: 1.2;
   }
-  .col-info .col-sub { font-size: 11px; color: var(--text-muted); }
+  .col-info .col-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .col-info .col-quip { font-size: 12px; color: var(--gold); font-style: italic; margin-top: 6px; opacity: 0.85; }
   .col-count {
     background: var(--border);
     color: #fff;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* ── Island nav buttons ── */
+  .island-nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    gap: 12px;
+  }
+  .island-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Pirata One', cursive;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+    white-space: nowrap;
+  }
+  .island-nav-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .island-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
+  .island-nav-btn.prev { background: linear-gradient(135deg, #8b7355, #a08060); }
+  .island-nav-btn.prev:hover { background: linear-gradient(135deg, #9b8365, #b09070); }
+  .island-nav-hint {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+    flex: 1;
+  }
+
+  /* ── Island Timer ── */
+  .island-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+  .timer-display {
+    font-family: 'Pirata One', cursive;
+    font-size: 36px;
+    color: var(--gold);
+    min-width: 90px;
+    text-align: center;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+  }
+  .timer-display.warning { color: var(--orange); }
+  .timer-display.danger { color: var(--red); animation: timerPulse 1s ease infinite; }
+  .timer-display.expired { color: var(--red); opacity: 0.7; }
+  @keyframes timerPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+  .timer-progress {
+    flex: 1;
+    height: 8px;
+    background: var(--border-light);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .timer-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    border-radius: 6px;
+    transition: width 1s linear, background 0.5s;
+  }
+  .timer-progress-bar.warning { background: linear-gradient(90deg, var(--orange), var(--gold-light)); }
+  .timer-progress-bar.danger { background: linear-gradient(90deg, var(--red), var(--orange)); }
+  .timer-btn {
+    padding: 8px 14px;
+    border: 1.5px solid var(--gold);
+    border-radius: 8px;
+    background: var(--gold-bg);
+    color: var(--gold);
+    font-family: 'Pirata One', cursive;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .timer-btn:hover { background: var(--gold); color: #fff; }
+  .timer-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .timer-btn.start { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+  .timer-btn.start:hover { background: var(--green); color: #fff; }
+  .timer-btn.extend { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+  .timer-btn.extend:hover { background: var(--blue); color: #fff; }
+  .timer-btn.stop { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+  .timer-btn.stop:hover { background: var(--red); color: #fff; }
+  .timer-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .timer-status {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
   }
   /* Column accent colors */
   .col-fruits .col-head { border-bottom: 3px solid var(--green); }
@@ -294,15 +557,16 @@
   .notes-scroll {
     flex: 1;
     overflow-y: auto;
-    max-height: 520px;
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    max-height: none;
+    padding: 12px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+    align-items: start;
   }
   .note {
     border-radius: 8px;
-    padding: 10px 12px;
+    padding: 12px 14px;
     position: relative;
     border: 1px solid var(--border-light);
   }
@@ -361,7 +625,7 @@
   }
 
   /* Add note */
-  .add-area { padding: 10px 12px; border-top: 1px solid var(--border-light); min-width: 0; overflow: hidden; }
+  .add-area { padding: 14px 20px; border-top: 1px solid var(--border-light); min-width: 0; overflow: hidden; }
   .add-trigger {
     width: 100%;
     padding: 8px;
@@ -509,6 +773,33 @@
     background: var(--card); border: 1px solid var(--border-light);
     border-top: none; border-radius: 0 0 12px 12px;
     padding: 16px 20px; margin-bottom: 20px; box-shadow: var(--shadow); min-height: 100px;
+  }
+
+  /* All-stops overview layout */
+  .plan-all-stops {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .plan-stop-section {
+    background: var(--card); border: 1px solid var(--border-light);
+    border-radius: 14px; padding: 16px 20px; box-shadow: var(--shadow);
+    border-left: 4px solid var(--stop-color);
+  }
+  .plan-stop-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .plan-stop-emoji { font-size: 24px; }
+  .plan-stop-title {
+    font-family: 'Pirata One', cursive; font-size: 18px; color: var(--stop-color); flex: 1;
+  }
+  .plan-stop-count {
+    font-size: 12px; font-weight: 700; background: var(--stop-color);
+    color: #fff; padding: 3px 10px; border-radius: 12px; min-width: 24px; text-align: center;
+  }
+  .pn-empty-mini {
+    text-align: center; padding: 16px; color: var(--border);
+    font-style: italic; font-size: 12px;
   }
 
   /* Note card */
@@ -750,6 +1041,37 @@
     background: var(--surface);
   }
   .sp-search::placeholder { color: var(--border); }
+  .sp-filter-bar {
+    display: flex;
+    gap: 4px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+  .sp-filter-btn {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    background: var(--card);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .sp-filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .sp-filter-btn.active { background: var(--gold); color: #1a1a2e; border-color: var(--gold); font-weight: 600; }
+  .sp-assignee-badge {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    background: var(--blue-bg);
+    color: var(--blue);
+    white-space: nowrap;
+    margin-left: auto;
+  }
   .sp-list {
     overflow-y: auto;
     flex: 1;
@@ -1000,15 +1322,29 @@ const SPRINT = {
   jira: "https://legogroup.atlassian.net/browse/"
 };
 
-const ISSUES = [{"key": "MCMT-2467", "summary": "Push update of MCCM DLs to all owners in MCCM", "status": "Done", "statusCategory": "Done", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1382"}, {"key": "MCMT-2324", "summary": "Phase II follow-up with MCCM LT - list of team drivers for next steps", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1383"}, {"key": "MCMT-1387", "summary": "Draft Campaign Framework & RACI Onboarding Pack", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1383"}, {"key": "MCMT-2015", "summary": "Plan and review remaining modalities and align on programme end time", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1389"}, {"key": "MCMT-1452", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1451", "summary": "Support teams during migration window", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1449", "summary": "Communicate migration process", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1448", "summary": "Review current library status per team", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1447"}, {"key": "MCMT-1462", "summary": "Share toolkit with People Leaders and track distribution", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1458"}, {"key": "MCMT-1460", "summary": "Phase 1: Private Guide", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1458"}, {"key": "MCMT-1459", "summary": "Draft comms copy", "status": "In Progress", "statusCategory": "In Progress", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1458"}, {"key": "MCMT-1467", "summary": "Follow up with each team to confirm their page is updated and contains relevant, current information", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1466", "summary": "Add/update key resources, links, and team-specific content", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1465", "summary": "Define structure and formatting standards for all team pages", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1464", "summary": "Review current state of each team page post-Tuna", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1463"}, {"key": "MCMT-1574", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1573", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1572", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1571", "summary": "Review current library status per team", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1456", "summary": "Decommission or redirect old links if needed", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1570"}, {"key": "MCMT-1595", "summary": "Decommission or redirect old links if needed", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1579", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1578", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1577", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1576", "summary": "Review current library status per team", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1575"}, {"key": "MCMT-1584", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1583", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1582", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1581", "summary": "Review current library status per team", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1580"}, {"key": "MCMT-1594", "summary": "Confirm when migration is complete", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-1593", "summary": "Support teams during migration window", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-1592", "summary": "Communicate migration process", "status": "To Do", "statusCategory": "To Do", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-1591", "summary": "Review current library status per team", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1590"}, {"key": "MCMT-2469", "summary": "Reconnect Camilla and align on rest of year", "status": "Done", "statusCategory": "Done", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1649"}, {"key": "MCMT-2436", "summary": "Present MCCM onboarding deck", "status": "In Progress", "statusCategory": "In Progress", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1696"}, {"key": "MCMT-1590", "summary": "MCCM Private Team Corner Structure and Migration \u2013 MGs", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1580", "summary": "MCCM Private Team Corner Structure and Migration \u2013 GMA", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1575", "summary": "MCCM Private Team Corner Structure and Migration \u2013 M&P", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1570", "summary": "MCCM Private Team Corner Structure and Migration \u2013 MDIP", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1458", "summary": "Private SharePoint Comms for People Leaders", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1447", "summary": "MCCM Private Team Corner Structure and Migration \u2013 TSM", "status": "In Progress", "statusCategory": "In Progress", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1912"}, {"key": "MCMT-1463", "summary": "MCCM Public Team Page Update - G&E", "status": "To Do", "statusCategory": "To Do", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1913"}, {"key": "MCMT-2478", "summary": "Send out 1 day to go email with ooo", "status": "Done", "statusCategory": "Done", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1981", "summary": "Ea: Host Retrospective ", "status": "Done", "statusCategory": "Done", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1972", "summary": "Send out post-LD comms with Feedback Loop", "status": "Done", "statusCategory": "Done", "type": "Task", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1971", "summary": "Execute Learning Day with Janne (Ea ooo)", "status": "Done", "statusCategory": "Done", "type": "Story", "assignee": "Unassigned", "epicKey": "MCMT-1957"}, {"key": "MCMT-1976", "summary": "Send out e-mail", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}, {"key": "MCMT-1975", "summary": "Add post-session links/resources", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}, {"key": "MCMT-1974", "summary": "Upload recordings + transcripts", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}, {"key": "MCMT-1973", "summary": "Launch post-Learning Day survey using Microsoft Forms", "status": "Done", "statusCategory": "Done", "type": "Sub-task", "assignee": "Unassigned", "epicKey": "MCMT-1972"}];
+const ISSUES = [{"key": "MCMT-1042","summary": "Audience & Channel Mapping","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2013"},{"key": "MCMT-1043","summary": "Messaging Guidelines","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2013"},{"key": "MCMT-1046","summary": "Comms 26' Plan","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2013"},{"key": "MCMT-1823","summary": "Complete Activation Calendar Q2","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2013"},{"key": "MCMT-1971","summary": "Execute Learning Day with Janne (Ea ooo)","status": "Done","statusCategory": "Done","type": "Story","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-1972","summary": "Send out post-LD comms with Feedback Loop","status": "Done","statusCategory": "Done","type": "Task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-1973","summary": "Launch post-Learning Day survey using Microsoft Forms","status": "Done","statusCategory": "Done","type": "Sub-task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-1974","summary": "Upload recordings + transcripts","status": "Done","statusCategory": "Done","type": "Sub-task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-1975","summary": "Add post-session links/resources","status": "Done","statusCategory": "Done","type": "Sub-task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-1976","summary": "Send out e-mail","status": "Done","statusCategory": "Done","type": "Sub-task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-1981","summary": "Ea: Host Retrospective ","status": "Done","statusCategory": "Done","type": "Story","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-1988","summary": "Julia - Update Individual Development Plan (IDP)","status": "In Progress","statusCategory": "In Progress","type": "Task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2191"},{"key": "MCMT-2000","summary": "Olga - IDP 2026 Draft","status": "To Do","statusCategory": "To Do","type": "Task","assignee": "Olga Khmel","epicKey": "MCMT-2191"},{"key": "MCMT-2014","summary": "Communications Plans \u2014 How","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2013"},{"key": "MCMT-2262","summary": "1st Month - Introduction to Leadership Playground and more","status": "Done","statusCategory": "Done","type": "Task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2238"},{"key": "MCMT-2272","summary": "Week 1 - Networking Plan","status": "In Progress","statusCategory": "In Progress","type": "Task","assignee": "Alexandre Ganz","epicKey": "MCMT-2238"},{"key": "MCMT-2285","summary": "Clarify conference purpose & objectives","status": "Done","statusCategory": "Done","type": "Story","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2282"},{"key": "MCMT-2294","summary": " Review Updated Budget Tracker & Capture Gaps","status": "To Do","statusCategory": "To Do","type": "Task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2284"},{"key": "MCMT-2296","summary": "Set Up Finance Cadence Expectations for Finance Controller","status": "Done","statusCategory": "Done","type": "Task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-2284"},{"key": "MCMT-2326","summary": "MCCM CoPilot License - prep and onboarding","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2431"},{"key": "MCMT-2349","summary": "Create a mapping of current M&C Teams versus Role Families","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2040"},{"key": "MCMT-2358","summary": "Conduct a new round of external research on marketing capabilities for the future (linked to role families)","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Olga Khmel","epicKey": "MCMT-2043"},{"key": "MCMT-2359","summary": "Assess current structure and resourcing to external research outcomes and present in a page","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Olga Khmel","epicKey": "MCMT-2043"},{"key": "MCMT-2360","summary": "Finalise the overall Resourcing Analysis","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2363"},{"key": "MCMT-2371","summary": "BU Canada","status": "Done","statusCategory": "Done","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2372","summary": "BU Mexico","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2373","summary": "BU USA","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2374","summary": "BU ANZ","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2375","summary": "BU HKTW","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2376","summary": "BU IEA","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2377","summary": "BU Japan","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2378","summary": "BU Korea","status": "Done","statusCategory": "Done","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2379","summary": "BU SIMATR","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2380","summary": "BU CZSK","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2381","summary": "BU HUNGREAD","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2382","summary": "BU MEA","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2383","summary": "BU PUB","status": "Done","statusCategory": "Done","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2384","summary": "BU ROISBU","status": "To Do","statusCategory": "To Do","type": "Sub-task","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2392","summary": "Bottom-up approach analysis using also Complexity Indexes","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2363"},{"key": "MCMT-2434","summary": "Build the summary and roadmap to be circulated to LT","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2431"},{"key": "MCMT-2435","summary": "Align with teams to organise the sessions (names and weeks) or names","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2431"},{"key": "MCMT-2436","summary": "Present MCCM onboarding deck","status": "Done","statusCategory": "Done","type": "Task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1696"},{"key": "MCMT-2441","summary": "Review the Draft Functional Pack for Brand Management and share with Dasha","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2158"},{"key": "MCMT-2442","summary": "Create the teams referential page","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2345"},{"key": "MCMT-2446","summary": "Finalise the Role Family resourcing model","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2363"},{"key": "MCMT-2448","summary": "QA all BU Types commentary per BU","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2042"},{"key": "MCMT-2449","summary": "QA Marketing Role pages and Workload drivers","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Olga Khmel","epicKey": "MCMT-2040"},{"key": "MCMT-2451","summary": "AMS Baseline staffing validation and Org charts QA","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2452","summary": "China Baseline staffing validation and Org charts QA","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2453","summary": "CEEMEA Baseline staffing validation and Org charts QA","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2454","summary": "APAC Baseline staffing validation and Org charts QA","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2455","summary": "BU Packs - WE release","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2456","summary": "BU Packs - APAC Release","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2457","summary": "BU Packs - CEEMEA Release","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2458","summary": "BU Packs - China Release","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2459","summary": "BU Packs - AMS Release","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2041"},{"key": "MCMT-2460","summary": "Build the straw man of functional packs","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2158"},{"key": "MCMT-2461","summary": "Draft the Media Process Landscape","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2158"},{"key": "MCMT-2462","summary": "Define and Review the Marketing Planning Landscape","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2158"},{"key": "MCMT-2463","summary": "Define and review the trade Marketing Landscape","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2158"},{"key": "MCMT-2464","summary": "Define and review the Brand Marketing Landscape","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2158"},{"key": "MCMT-2465","summary": "Merge LEGO Group BU Clustering + External Research: Take-Away by BU Type","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2345"},{"key": "MCMT-2466","summary": "Amend BU profiles hub and include latest clustering options","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2345"},{"key": "MCMT-2469","summary": "Reconnect Camilla and align on rest of year","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-1649"},{"key": "MCMT-2470","summary": "Merger of versions for marketing roles + Workload","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2040"},{"key": "MCMT-2475","summary": "Put KPIs in system","status": "To Do","statusCategory": "To Do","type": "Task","assignee": "Alexandre Goubin","epicKey": "MCMT-2191"},{"key": "MCMT-2478","summary": "Send out 1 day to go email with ooo","status": "Done","statusCategory": "Done","type": "Task","assignee": "Julia Silva-Bechmann (She/Her)","epicKey": "MCMT-1957"},{"key": "MCMT-2479","summary": "Draft the functional pack for trade","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Goubin","epicKey": "MCMT-2158"},{"key": "MCMT-2480","summary": "Finalise the Marketing Operating Complexity Modeling","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2363"},{"key": "MCMT-2481","summary": "Build the Maturity Clustering analysis","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2363"},{"key": "MCMT-2482","summary": "MCCM Agent Brick Page","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2477"},{"key": "MCMT-2484","summary": "fake data for testing","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2476"},{"key": "MCMT-2485","summary": "BU Pack Section 3 Text Adjustments","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2041"},{"key": "MCMT-2486","summary": "BU Pack Section 2 Text","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2041"},{"key": "MCMT-2487","summary": "Organize Jon Moss Notes","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2238"},{"key": "MCMT-2488","summary": "Migrate page to sharepoint","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2477"},{"key": "MCMT-2489","summary": "Book meeting with Emilie Lundblad (scouting AI across org)","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2238"},{"key": "MCMT-2490","summary": "Book meeting with Waqas Ali (scouting AI across org)","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2238"},{"key": "MCMT-2491","summary": "Book meeting with Robert Vocke for backlog","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2238"},{"key": "MCMT-2492","summary": "Create Agents in Copilot for easy sharing (Email tracker, meeting notes, etc...)","status": "To Do","statusCategory": "To Do","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2477"},{"key": "MCMT-2525","summary": "BU Pack Review \u2014 BU Americas B2B eCommerce","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2526","summary": "BU Pack Review \u2014 BU Australia/New Zealand","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2527","summary": "BU Pack Review \u2014 BU BENELUX","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2528","summary": "BU Pack Review \u2014 BU Canada","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2529","summary": "BU Pack Review \u2014 BU China","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2530","summary": "BU Pack Review \u2014 BU Czech Republic and Slovakia","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2531","summary": "BU Pack Review \u2014 BU Europe Central","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2532","summary": "BU Pack Review \u2014 BU France Iberia","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2533","summary": "BU Pack Review \u2014 BU Hungary, Greece, Adriatics","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2534","summary": "BU Pack Review \u2014 BU Hong Kong/Taiwan","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2535","summary": "BU Pack Review \u2014 BU India/Emerging Asia","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2536","summary": "BU Pack Review \u2014 BU Italy","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2537","summary": "BU Pack Review \u2014 BU Japan","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2538","summary": "BU Pack Review \u2014 BU Korea","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2539","summary": "BU Pack Review \u2014 BU Middle-East & Africa","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2540","summary": "BU Pack Review \u2014 BU Mexico","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2541","summary": "BU Pack Review \u2014 BU Nordics","status": "In Progress","statusCategory": "In Progress","type": "Story","assignee": "Unassigned","epicKey": "MCMT-2041"},{"key": "MCMT-2782","summary": "Creation of UI - Chat base","status": "Done","statusCategory": "Done","type": "Story","assignee": "Alexandre Ganz","epicKey": "MCMT-2476"},{"key": "MCMT-2784","summary": "Book Meeting with Alexander Jacques (MIP)","status": "Done","statusCategory": "Done","type": "Task","assignee": "Alexandre Ganz","epicKey": "MCMT-2238"}];
 
-const EPICS = {"MCMT-1382": "MCCM SharePoint V2 \u2013 Governance, Enablement & Comms", "MCMT-1383": "Update and deploy Campaign RACI", "MCMT-1389": "Kick the CAN", "MCMT-1447": "MCCM Private Team Corner Structure and Migration \u2013 TSM", "MCMT-1458": "Private SharePoint Comms for People Leaders", "MCMT-1463": "MCCM Public Team Page Update - G&E", "MCMT-1570": "MCCM Private Team Corner Structure and Migration \u2013 MDIP", "MCMT-1575": "MCCM Private Team Corner Structure and Migration \u2013 M&P", "MCMT-1580": "MCCM Private Team Corner Structure and Migration \u2013 GMA", "MCMT-1590": "MCCM Private Team Corner Structure and Migration \u2013 MGs", "MCMT-1649": "Calendar Generation at country level - Data Model", "MCMT-1696": "MCCM Onboarding Experience", "MCMT-1912": "MCCM SharePoint V2 \u2013 Private Collaboration Spaces", "MCMT-1913": "MCCM SharePoint V2 \u2013 Public Pages", "MCMT-1957": "Learning Day April 29", "MCMT-1972": "Send out post-LD comms with Feedback Loop"};
+const EPICS = {"MCMT-2477": "Central hub for MCCM on the usage of agents","MCMT-2476": "RAG system with different sources to query knowledge on MCCM","MCMT-2431": "Tools & Processes Workstream set-up","MCMT-2363": "BUMBL Resource and Team size modelling","MCMT-2345": "BUMBL - Homesite","MCMT-2284": "F2F Phase 1: [cross-conference] Finance & Budget Tracking","MCMT-2282": "F2F Phase 1: [cross-conference] Red Thread & Agenda","MCMT-2238": "Onboarding Ale","MCMT-2191": "L&D & People Processes - Q2 '26","MCMT-2158": "BUMBL - Functional Streams","MCMT-2043": "BUMBL - Define capabilities needed for the future","MCMT-2042": "BUMBL - BU Types & Operating Models","MCMT-2041": "BUMBL - As Is Org Assessment - BU PACKS","MCMT-2040": "BUMBL - Marketing Roles Catalogue","MCMT-2013": "Editorial & Comms Plan - 26","MCMT-1957": "Learning Day April 29","MCMT-1696": "MCCM Onboarding Experience","MCMT-1649": "Calendar Generation at country level - Data Model"};
 
 /* ═══════════════════════════════════════════
    STORY PICKER (custom dropdown with search)
    ═══════════════════════════════════════════ */
+let _pickerAssigneeFilter = '';
+
+function getUniqueAssignees() {
+  const assignees = new Set();
+  ISSUES.forEach(i => { if (i.assignee && i.assignee !== 'Unassigned') assignees.add(i.assignee); });
+  return Array.from(assignees).sort();
+}
+
+function shortName(name) {
+  if (!name || name === 'Unassigned') return '?';
+  return name.split(' ').map(n => n[0]).join('').substring(0,2);
+}
+
 function buildPickerHTML(filter) {
   const f = (filter||'').toLowerCase();
+  const af = _pickerAssigneeFilter;
   const grouped = {};
   ISSUES.forEach(i => {
     const ek = i.epicKey || '__none__';
@@ -1022,7 +1358,8 @@ function buildPickerHTML(filter) {
   Object.keys(EPICS).forEach(ek => {
     if (!grouped[ek]) return;
     const items = grouped[ek].filter(i =>
-      !f || i.key.toLowerCase().includes(f) || i.summary.toLowerCase().includes(f) || EPICS[ek].toLowerCase().includes(f)
+      (!f || i.key.toLowerCase().includes(f) || i.summary.toLowerCase().includes(f) || EPICS[ek].toLowerCase().includes(f) || (i.assignee||'').toLowerCase().includes(f)) &&
+      (!af || i.assignee === af)
     );
     if (!items.length) return;
     anyMatch = true;
@@ -1033,14 +1370,15 @@ function buildPickerHTML(filter) {
     html += '<div class="sp-epic-items">';
     items.forEach(i => {
       const sc = i.statusCategory === 'Done' ? 'done' : (i.statusCategory === 'In Progress' ? 'ip' : 'todo');
-      html += '<div class="sp-item" data-key="' + i.key + '"><span class="sp-key">' + i.key + '</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(i.summary) + '</span> <span class="sp-status sp-status-' + sc + '">' + i.status + '</span></div>';
+      html += '<div class="sp-item" data-key="' + i.key + '"><span class="sp-key">' + i.key + '</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(i.summary) + '</span> <span class="sp-assignee-badge">' + shortName(i.assignee) + '</span> <span class="sp-status sp-status-' + sc + '">' + i.status + '</span></div>';
     });
     html += '</div></div>';
   });
 
   if (grouped['__none__']) {
     const items = grouped['__none__'].filter(i =>
-      !f || i.key.toLowerCase().includes(f) || i.summary.toLowerCase().includes(f)
+      (!f || i.key.toLowerCase().includes(f) || i.summary.toLowerCase().includes(f)) &&
+      (!af || i.assignee === af)
     );
     if (items.length) {
       anyMatch = true;
@@ -1048,13 +1386,13 @@ function buildPickerHTML(filter) {
       html += '<div class="sp-epic-items">';
       items.forEach(i => {
         const sc = i.statusCategory === 'Done' ? 'done' : (i.statusCategory === 'In Progress' ? 'ip' : 'todo');
-        html += '<div class="sp-item" data-key="' + i.key + '"><span class="sp-key">' + i.key + '</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(i.summary) + '</span> <span class="sp-status sp-status-' + sc + '">' + i.status + '</span></div>';
+        html += '<div class="sp-item" data-key="' + i.key + '"><span class="sp-key">' + i.key + '</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(i.summary) + '</span> <span class="sp-assignee-badge">' + shortName(i.assignee) + '</span> <span class="sp-status sp-status-' + sc + '">' + i.status + '</span></div>';
       });
       html += '</div></div>';
     }
   }
 
-  if (!anyMatch) html = '<div class="sp-no-match">No quests matching "' + esc(f) + '"</div>';
+  if (!anyMatch) html = '<div class="sp-no-match">No quests matching "' + esc(f || af) + '"</div>';
   return html;
 }
 
@@ -1085,6 +1423,8 @@ function togglePicker(col) {
       dd.style.maxHeight = Math.min(ddMaxH, spaceAbove) + 'px';
     }
     dd.classList.add('open');
+    _pickerAssigneeFilter = '';
+    renderAssigneeFilterBar(col);
     const list = document.getElementById('splist-' + col);
     list.innerHTML = buildPickerHTML('');
     list.querySelectorAll('.sp-item').forEach(item => {
@@ -1093,6 +1433,26 @@ function togglePicker(col) {
     dd.querySelector('.sp-search').value = '';
     dd.querySelector('.sp-search').focus();
   }
+}
+
+function renderAssigneeFilterBar(col) {
+  const bar = document.getElementById('spfilter-' + col);
+  const assignees = getUniqueAssignees();
+  let html = '<button class="sp-filter-btn' + (!_pickerAssigneeFilter ? ' active' : '') + '" onclick="setPickerAssignee(\'' + col + '\', \'\', event)">All</button>';
+  assignees.forEach(a => {
+    const parts = a.replace(/\s*\(.*?\)\s*/g, '').split(' ');
+    const label = parts.length > 1 ? parts[0] + ' ' + parts[1].substring(0, 3) + '.' : parts[0];
+    html += '<button class="sp-filter-btn' + (_pickerAssigneeFilter === a ? ' active' : '') + '" onclick="setPickerAssignee(\'' + col + '\', \'' + esc(a).replace(/'/g, "\\'") + '\', event)">' + esc(label) + '</button>';
+  });
+  bar.innerHTML = html;
+}
+
+function setPickerAssignee(col, assignee, evt) {
+  if (evt) evt.stopPropagation();
+  _pickerAssigneeFilter = assignee;
+  renderAssigneeFilterBar(col);
+  const q = document.querySelector('#spdd-' + col + ' .sp-search').value;
+  filterPicker(col, q);
 }
 
 function filterPicker(col, q) {
@@ -1127,12 +1487,14 @@ document.addEventListener('click', e => {
 });
 
 const COLS = [
-  { id: 'fruits',  emoji: '🍎', name: 'Sweet Fruits',         sub: 'What went well, matey?',    btn: '+ Add a sweet fruit' },
-  { id: 'claire',  emoji: '🗣️', name: 'Discuss with Claire',  sub: 'Topics for the Captain\'s table', btn: '+ Raise a topic' },
-  { id: 'gold',    emoji: '💰', name: 'Hidden Gold',           sub: 'Shout out to yer crew!',    btn: '+ Give a shout-out' },
-  { id: 'pirates', emoji: '🏴‍☠️', name: 'Pirates on the Shore', sub: 'What didn\'t go well?',   btn: '+ Report a storm' },
-  { id: 'bottle',  emoji: '🍾', name: 'Message in a Bottle',   sub: 'Action points for the future', btn: '+ Cast a message' }
+  { id: 'fruits',  emoji: '🍎', name: 'Sweet Fruits',         sub: 'What went well, matey?',    btn: '+ Add a sweet fruit',    island: '🍎', spot: 'Sweet Fruits',        quip: '🦜 "Even pirates celebrate wins — don\'t be shy, drop yer loot!"' },
+  { id: 'claire',  emoji: '🗣️', name: 'Discuss with Claire',  sub: 'Topics for the Captain\'s table', btn: '+ Raise a topic', island: '🗣️', spot: 'Discuss with Claire', quip: '🧭 "The Captain listens — what\'s brewing in the crew\'s quarters?"' },
+  { id: 'gold',    emoji: '💰', name: 'Hidden Gold',           sub: 'Shout out to yer crew!',    btn: '+ Give a shout-out',     island: '💰', spot: 'Hidden Gold',         quip: '🏅 "X marks the spot — who deserves a treasure chest of praise?"' },
+  { id: 'pirates', emoji: '🏴‍☠️', name: 'Pirates on the Shore', sub: 'What didn\'t go well?',   btn: '+ Report a storm',       island: '🏴‍☠️', spot: 'Pirates on the Shore', quip: '⚡ "No mutiny here — just honest storms to weather together!"' },
+  { id: 'bottle',  emoji: '🍾', name: 'Message in a Bottle',   sub: 'Action points for the future', btn: '+ Cast a message',   island: '🍾', spot: 'Message in a Bottle', quip: '🌊 "Cast yer wishes to the sea — what should next sprint bring?"' }
 ];
+
+let _currentStop = 0;
 
 /* ═══════════════════════════════════════════
    FIREBASE CONFIG
@@ -1162,11 +1524,19 @@ function getNotes(col) { return (_cache[col] || []); }
 function allNotes() { let all = []; COLS.forEach(c => (_cache[c.id]||[]).forEach(n => all.push({...n, col: c.id}))); return all; }
 
 // Real-time listener — syncs all users
+function isUserInteracting() {
+  return document.querySelector('.add-form.open') ||
+         document.querySelector('.story-picker-dropdown.open') ||
+         document.activeElement?.matches('.add-form textarea, .sp-search');
+}
+
 db.ref(RETRO_PATH + '/notes').on('value', snap => {
   _cache = snap.val() || {};
   _ready = true;
   if (document.getElementById('app').classList.contains('active')) {
-    renderBoard();
+    if (!isUserInteracting()) {
+      renderBoard();
+    }
     if (document.getElementById('view-plan').classList.contains('active')) renderPlan();
   }
 });
@@ -1286,16 +1656,181 @@ window.addEventListener('DOMContentLoaded', () => {
 /* ═══════════════════════════════════════════
    BOARD RENDERING
    ═══════════════════════════════════════════ */
+function splashEmoji(emoji) {
+  const el = document.createElement('div');
+  el.className = 'island-splash';
+  el.textContent = emoji;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 850);
+}
+
+function navigateIsland(dir) {
+  const next = _currentStop + dir;
+  if (next < 0 || next >= COLS.length) return;
+  _currentStop = next;
+  resetTimer();
+  splashEmoji(COLS[_currentStop].emoji);
+  renderBoard();
+  document.getElementById('board').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function jumpToIsland(idx) {
+  if (idx < 0 || idx >= COLS.length) return;
+  _currentStop = idx;
+  resetTimer();
+  splashEmoji(COLS[_currentStop].emoji);
+  renderBoard();
+}
+
+/* ═══════════════════════════════════════════
+   ISLAND TIMER (3 min per stop, +1 min extension)
+   ═══════════════════════════════════════════ */
+const TIMER_BASE = 3 * 60;      // 3 minutes
+const TIMER_EXTEND = 1 * 60;    // +1 minute
+const TIMER_MAX_EXTEND = 1;     // only 1 extension allowed
+let _timerSeconds = TIMER_BASE;
+let _timerRemaining = TIMER_BASE;
+let _timerInterval = null;
+let _timerRunning = false;
+let _timerExtensions = 0;
+
+function resetTimer() {
+  stopTimerInterval();
+  _timerSeconds = TIMER_BASE;
+  _timerRemaining = TIMER_BASE;
+  _timerRunning = false;
+  _timerExtensions = 0;
+}
+
+function startTimer() {
+  if (_timerRunning) return;
+  _timerRunning = true;
+  _timerInterval = setInterval(() => {
+    _timerRemaining--;
+    updateTimerDisplay();
+    if (_timerRemaining <= 0) {
+      stopTimerInterval();
+      _timerRunning = false;
+      updateTimerDisplay();
+      toast('⏰ Time\'s up, matey! Move to the next stop!');
+    }
+  }, 1000);
+  updateTimerDisplay();
+}
+
+function stopTimerInterval() {
+  if (_timerInterval) {
+    clearInterval(_timerInterval);
+    _timerInterval = null;
+  }
+}
+
+function stopTimer() {
+  stopTimerInterval();
+  _timerRunning = false;
+  updateTimerDisplay();
+}
+
+function extendTimer() {
+  if (_timerExtensions >= TIMER_MAX_EXTEND) return;
+  _timerExtensions++;
+  _timerRemaining += TIMER_EXTEND;
+  _timerSeconds += TIMER_EXTEND;
+  if (!_timerRunning && _timerRemaining > 0) {
+    startTimer();
+  }
+  updateTimerDisplay();
+  toast('⏳ +1 minute added! Last chance, crew!');
+}
+
+function updateTimerDisplay() {
+  const display = document.getElementById('timer-display');
+  const bar = document.getElementById('timer-bar');
+  const extBtn = document.getElementById('timer-extend-btn');
+  const startBtn = document.getElementById('timer-start-btn');
+  if (!display) return;
+
+  const mins = Math.max(0, Math.floor(_timerRemaining / 60));
+  const secs = Math.max(0, _timerRemaining % 60);
+  display.textContent = mins + ':' + secs.toString().padStart(2, '0');
+
+  // Progress bar
+  const pct = Math.max(0, (_timerRemaining / _timerSeconds) * 100);
+  if (bar) {
+    bar.style.width = pct + '%';
+    bar.className = 'timer-progress-bar' +
+      (_timerRemaining <= 30 && _timerRemaining > 0 ? ' danger' :
+       _timerRemaining <= 60 && _timerRemaining > 0 ? ' warning' : '');
+  }
+
+  // Display state
+  display.className = 'timer-display' +
+    (_timerRemaining <= 0 ? ' expired' :
+     _timerRemaining <= 30 ? ' danger' :
+     _timerRemaining <= 60 ? ' warning' : '');
+
+  // Buttons
+  if (startBtn) startBtn.style.display = _timerRunning || _timerRemaining <= 0 ? 'none' : '';
+  const stopBtn = document.getElementById('timer-stop-btn');
+  if (stopBtn) stopBtn.style.display = _timerRunning ? '' : 'none';
+  if (extBtn) {
+    extBtn.disabled = _timerExtensions >= TIMER_MAX_EXTEND || _timerRemaining <= 0 || !_timerRunning;
+    extBtn.title = _timerExtensions >= TIMER_MAX_EXTEND ? 'No more extensions, Captain!' : '+1 minute for the crew';
+  }
+}
+
+function renderTimerHTML() {
+  const mins = Math.max(0, Math.floor(_timerRemaining / 60));
+  const secs = Math.max(0, _timerRemaining % 60);
+  const pct = Math.max(0, (_timerRemaining / _timerSeconds) * 100);
+  const cls = _timerRemaining <= 0 ? 'expired' : _timerRemaining <= 30 ? 'danger' : _timerRemaining <= 60 ? 'warning' : '';
+  const barCls = cls === 'expired' ? 'danger' : cls;
+
+  return `<div class="island-timer">
+    <span class="timer-label">⏰ Timer</span>
+    <span class="timer-display ${cls}" id="timer-display">${mins}:${secs.toString().padStart(2, '0')}</span>
+    <div class="timer-progress">
+      <div class="timer-progress-bar ${barCls}" id="timer-bar" style="width:${pct}%"></div>
+    </div>
+    <button class="timer-btn start" id="timer-start-btn" onclick="startTimer()" style="${_timerRunning || _timerRemaining <= 0 ? 'display:none' : ''}">▶ Start</button>
+    <button class="timer-btn stop" id="timer-stop-btn" onclick="stopTimer()" style="${!_timerRunning ? 'display:none' : ''}">⏹ Stop</button>
+    <button class="timer-btn extend" id="timer-extend-btn" onclick="extendTimer()" ${_timerExtensions >= TIMER_MAX_EXTEND || !_timerRunning || _timerRemaining <= 0 ? 'disabled' : ''}>+1 min</button>
+    ${_timerRemaining <= 0 ? '<span class="timer-status">⚓ Time\'s up!</span>' : ''}
+  </div>`;
+}
+
 function renderBoard() {
   const board = document.getElementById('board');
-  board.innerHTML = COLS.map(c => {
-    const notes = getNotes(c.id);
-    return `<div class="retro-col col-${c.id}">
+  const c = COLS[_currentStop];
+  const notes = getNotes(c.id);
+
+  // ── Island map (progress) ──
+  let mapHTML = '<div class="island-map">';
+  COLS.forEach((col, i) => {
+    const colNotes = getNotes(col.id);
+    const isActive = i === _currentStop;
+    const isVisited = i < _currentStop;
+    const cls = isActive ? 'active' : (isVisited ? 'visited' : '');
+    mapHTML += `<div class="island-stop ${cls}" onclick="jumpToIsland(${i})" title="${col.spot}">
+      <span class="stop-icon">${col.island}</span>
+      <span class="stop-name">${col.spot}</span>
+      <span class="stop-count">${colNotes.length}</span>
+    </div>`;
+    if (i < COLS.length - 1) {
+      mapHTML += `<div class="island-path ${i < _currentStop ? 'sailed' : ''}"></div>`;
+    }
+  });
+  mapHTML += '</div>';
+
+  // ── Active column (full width) ──
+  const colHTML = `<div class="island-col-wrapper anim-${c.id}">
+    <div class="retro-col col-${c.id}">
       <div class="col-head">
         <span class="col-emoji">${c.emoji}</span>
         <div class="col-info">
           <h3>${c.name}</h3>
           <div class="col-sub">${c.sub}</div>
+          <div class="col-quip">${c.quip}</div>
         </div>
         <span class="col-count">${notes.length}</span>
       </div>
@@ -1314,6 +1849,7 @@ function renderBoard() {
             </button>
             <div class="story-picker-dropdown" id="spdd-${c.id}">
               <input type="text" class="sp-search" placeholder="🔍 Search stories or epics..." oninput="filterPicker('${c.id}', this.value)">
+              <div class="sp-filter-bar" id="spfilter-${c.id}"></div>
               <div class="sp-list" id="splist-${c.id}"></div>
             </div>
           </div>
@@ -1323,8 +1859,23 @@ function renderBoard() {
           </div>
         </div>
       </div>
-    </div>`;
-  }).join('');
+    </div>
+  </div>`;
+
+  // ── Navigation row ──
+  const prevCol = _currentStop > 0 ? COLS[_currentStop - 1] : null;
+  const nextCol = _currentStop < COLS.length - 1 ? COLS[_currentStop + 1] : null;
+  let navHTML = '<div class="island-nav-row">';
+  navHTML += `<button class="island-nav-btn prev" onclick="navigateIsland(-1)" ${!prevCol ? 'disabled' : ''}>
+    ← ${prevCol ? prevCol.island + ' ' + prevCol.spot : 'Start'}
+  </button>`;
+  navHTML += `<span class="island-nav-hint">Stop ${_currentStop + 1} of ${COLS.length} — ${c.spot}</span>`;
+  navHTML += `<button class="island-nav-btn" onclick="navigateIsland(1)" ${!nextCol ? 'disabled' : ''}>
+    ${nextCol ? nextCol.spot + ' ' + nextCol.island : 'End'} →
+  </button>`;
+  navHTML += '</div>';
+
+  board.innerHTML = '<div class="island-journey">' + mapHTML + renderTimerHTML() + colHTML + navHTML + '</div>';
 }
 
 function renderNotes(col, notes) {
@@ -1362,6 +1913,8 @@ function closeForm(col) {
   document.getElementById(`text-${col}`).value = '';
   clearPicker(col);
   document.querySelectorAll('.story-picker-dropdown').forEach(d => d.classList.remove('open'));
+  // Catch up on any Firebase updates missed while interacting
+  renderBoard();
 }
 function submitNote(col) {
   if (_locked) { toast('🔒 Board is locked — voyage is complete!'); return; }
@@ -1379,30 +1932,22 @@ function doDelete(col, nid) {
   if (confirm('Walk the plank? 💀')) { deleteNoteData(col, nid); renderBoard(); toast('💀 Gone!'); }
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') COLS.forEach(c => closeForm(c.id)); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') COLS.forEach(c => closeForm(c.id));
+  // Arrow key island navigation (only on retro view, and not when typing)
+  if (document.getElementById('view-retro').classList.contains('active') && !e.target.matches('textarea, input')) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); navigateIsland(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); navigateIsland(-1); }
+  }
+});
 
 /* ═══════════════════════════════════════════
    PLAN VIEW
    ═══════════════════════════════════════════ */
-let _planTab = 'fruits';
-
-function switchPlanTab(colId) {
-  _planTab = colId;
-  renderPlan();
-}
-
 function renderPlan() {
   const all = allNotes();
   const container = document.getElementById('plan-content');
   const sortByVotes = (a, b) => (b.votes||0) - (a.votes||0);
-
-  const colMeta = {
-    fruits:  { emoji:'🍎', short:'Fruits',  color:'var(--green)' },
-    claire:  { emoji:'💬', short:'Claire',  color:'var(--blue)' },
-    gold:    { emoji:'🏆', short:'Gold',    color:'var(--gold)' },
-    pirates: { emoji:'🏴‍☠️', short:'Pirates', color:'var(--red)' },
-    bottle:  { emoji:'📜', short:'Bottle',  color:'var(--purple)' },
-  };
 
   const notesByCol = {};
   COLS.forEach(c => { notesByCol[c.id] = []; });
@@ -1411,7 +1956,6 @@ function renderPlan() {
   const totalNotes = all.length;
   const totalVotes = all.reduce((s,n) => s + (n.votes||0), 0);
   const linkedCount = all.filter(n => n.linkedKey).length;
-  const unlinkedCount = totalNotes - linkedCount;
   const hasClusters = COLS.some(c => _clusterCache[c.id] && _clusterCache[c.id].clusters);
 
   // ── Summary bar ──
@@ -1421,105 +1965,72 @@ function renderPlan() {
     '<div class="plan-stat"><span class="plan-stat-num">' + totalVotes + '</span><span class="plan-stat-label">Votes</span></div>' +
     '<div class="plan-stat-divider"></div>' +
     '<div class="plan-stat"><span class="plan-stat-num">' + linkedCount + '</span><span class="plan-stat-label">Linked</span></div>' +
-    '<div class="plan-stat-divider"></div>' +
-    '<div class="plan-stat"><span class="plan-stat-num">' + unlinkedCount + '</span><span class="plan-stat-label">Unlinked</span></div>' +
     (!_locked && totalNotes >= 2 ? '<div class="plan-stat-divider"></div><div class="plan-stat plan-cluster-action">' +
       '<button id="cluster-all-btn" class="cluster-btn" onclick="clusterAllNotes()">🧠 Auto-Group All</button>' +
       (hasClusters ? '<button class="cluster-clear-all-btn" onclick="clearAllClusters()">✕ Clear groups</button>' : '') +
     '</div>' : '') +
   '</div>';
 
-  // ── Tabs ──
-  html += '<div class="plan-tabs">';
+  // ── All Stops Overview ──
+  html += '<div class="plan-all-stops">';
+
   COLS.forEach(col => {
-    const count = notesByCol[col.id].length;
-    const meta = colMeta[col.id];
-    const active = _planTab === col.id ? ' active' : '';
-    html += '<button class="plan-tab' + active + '" data-col="' + col.id + '" onclick="switchPlanTab(\'' + col.id + '\')">' +
-      '<span class="tab-emoji">' + meta.emoji + '</span>' +
-      meta.short + '<span class="tab-count">' + count + '</span>' +
-    '</button>';
+    const notes = notesByCol[col.id].sort(sortByVotes);
+    const clusterData = _clusterCache[col.id];
+    const colColors = { fruits: 'var(--green)', claire: 'var(--blue)', gold: 'var(--gold)', pirates: 'var(--red)', bottle: 'var(--purple)' };
+
+    html += '<div class="plan-stop-section" style="--stop-color: ' + colColors[col.id] + '">';
+    html += '<div class="plan-stop-header">' +
+      '<span class="plan-stop-emoji">' + col.emoji + '</span>' +
+      '<div class="plan-stop-title">' + col.name + '</div>' +
+      '<span class="plan-stop-count">' + notes.length + '</span>' +
+    '</div>';
+
+    if (notes.length === 0) {
+      html += '<div class="pn-empty-mini">No notes yet 🏝️</div>';
+    } else if (clusterData && clusterData.clusters) {
+      // Clustered view
+      const noteMap = {};
+      notes.forEach(n => { noteMap[n.id] = n; });
+      const clusteredIds = new Set();
+      clusterData.clusters.forEach(c => (c.noteIds||[]).forEach(id => clusteredIds.add(id)));
+      const unclustered = notes.filter(n => !clusteredIds.has(n.id));
+
+      const sorted = [...clusterData.clusters].sort((a, b) => {
+        const va = (a.noteIds||[]).reduce((s, id) => s + ((noteMap[id]||{}).votes||0), 0);
+        const vb = (b.noteIds||[]).reduce((s, id) => s + ((noteMap[id]||{}).votes||0), 0);
+        return vb - va;
+      });
+
+      sorted.forEach((cluster, ci) => {
+        const cNotes = (cluster.noteIds||[]).map(id => noteMap[id]).filter(Boolean).sort(sortByVotes);
+        if (!cNotes.length) return;
+        const cVotes = cNotes.reduce((s,n) => s + (n.votes||0), 0);
+        html += '<div class="pn-cluster-group pn-drop-zone" data-cluster-idx="' + ci + '" data-col="' + col.id + '">' +
+          '<div class="pn-cluster-label">' +
+            '<span>' + esc(cluster.name) + '</span>' +
+            '<span class="pn-cluster-count">' + cNotes.length + ' notes' + (cVotes > 0 ? ' · 👍 ' + cVotes : '') + '</span>' +
+          '</div>';
+        cNotes.forEach(n => { html += renderNoteCard(n, !_locked); });
+        html += '</div>';
+      });
+
+      if (unclustered.length) {
+        html += '<div class="pn-cluster-group pn-drop-zone" data-cluster-idx="unclustered" data-col="' + col.id + '" style="opacity:0.7;">' +
+          '<div class="pn-cluster-label"><span>📋 Ungrouped</span>' +
+            '<span class="pn-cluster-count">' + unclustered.length + '</span></div>';
+        unclustered.forEach(n => { html += renderNoteCard(n, !_locked); });
+        html += '</div>';
+      }
+    } else {
+      // Flat view
+      notes.forEach(n => { html += renderNoteCard(n); });
+    }
+
+    html += '</div>'; // plan-stop-section
   });
-  html += '</div>';
 
-  // ── Active tab content ──
-  const activeCol = _planTab;
-  const notes = notesByCol[activeCol].sort(sortByVotes);
-  const clusterData = _clusterCache[activeCol];
-
-  html += '<div class="plan-tab-content">';
-
-  if (notes.length === 0) {
-    html += '<div class="pn-empty">No notes in this bucket yet. Add them on the retro board! 🏴‍☠️</div>';
-  } else if (clusterData && clusterData.clusters) {
-    // ── Clustered view (draggable) ──
-    const canDrag = !_locked;
-    const noteMap = {};
-    notes.forEach(n => { noteMap[n.id] = n; });
-    const clusteredIds = new Set();
-    clusterData.clusters.forEach(c => (c.noteIds||[]).forEach(id => clusteredIds.add(id)));
-    const unclustered = notes.filter(n => !clusteredIds.has(n.id));
-
-    const sortedClusters = [...clusterData.clusters].sort((a, b) => {
-      const va = (a.noteIds||[]).reduce((s, id) => s + ((noteMap[id]||{}).votes||0), 0);
-      const vb = (b.noteIds||[]).reduce((s, id) => s + ((noteMap[id]||{}).votes||0), 0);
-      return vb - va;
-    });
-
-    if (canDrag) {
-      html += '<div class="pn-drag-hint">💡 Drag notes between groups to correct the AI clustering</div>';
-    }
-
-    sortedClusters.forEach((cluster, ci) => {
-      const cNotes = (cluster.noteIds||[]).map(id => noteMap[id]).filter(Boolean).sort(sortByVotes);
-      if (!cNotes.length) return;
-      const cVotes = cNotes.reduce((s,n) => s + (n.votes||0), 0);
-      html += '<div class="pn-cluster-group pn-drop-zone" data-cluster-idx="' + ci + '" data-col="' + activeCol + '">' +
-        '<div class="pn-cluster-label">' +
-          '<span>' + esc(cluster.name) + '</span>' +
-          '<span class="pn-cluster-count">' + cNotes.length + ' notes' + (cVotes > 0 ? ' · 👍 ' + cVotes : '') + '</span>' +
-        '</div>';
-      cNotes.forEach(n => { html += renderNoteCard(n, canDrag); });
-      html += '</div>';
-    });
-
-    if (unclustered.length) {
-      html += '<div class="pn-cluster-group pn-drop-zone" data-cluster-idx="unclustered" data-col="' + activeCol + '" style="opacity:0.7;">' +
-        '<div class="pn-cluster-label"><span>📋 Added after grouping</span>' +
-          '<span class="pn-cluster-count">' + unclustered.length + '</span></div>';
-      unclustered.forEach(n => { html += renderNoteCard(n, canDrag); });
-      html += '</div>';
-    }
-  } else {
-    // ── Flat sorted view ──
-    notes.forEach(n => {
-      html += renderNoteCard(n);
-    });
-  }
-
-  html += '</div>';
-
-  // ── Action items (always visible at bottom) ──
-  const actionItems = notesByCol['bottle'].sort(sortByVotes);
-  if (actionItems.length > 0) {
-    html += '<div class="plan-actions-section">' +
-      '<div class="plan-actions-title">⚓ Action Items <span style="font-family:Inter,sans-serif;font-size:12px;color:var(--text-muted);font-weight:400;">sorted by votes</span></div>';
-    actionItems.forEach(n => {
-      html += '<div class="action-card">' +
-        '<div class="pn-votes' + ((n.votes||0) === 0 ? ' pn-votes-zero' : '') + '">' +
-          '<span class="pn-votes-num">' + (n.votes||0) + '</span>' +
-        '</div>' +
-        '<div class="pn-body">' +
-          '<div class="pn-text">' + esc(n.text) + '</div>' +
-          '<div class="pn-meta">' +
-            '<span class="pn-author">— ' + esc(n.author) + '</span>' +
-            (n.linkedKey ? '<a class="pn-story-tag" href="' + SPRINT.jira + n.linkedKey + '" target="_blank">🔗 ' + n.linkedKey + '</a>' : '') +
-          '</div>' +
-        '</div>' +
-      '</div>';
-    });
-    html += '</div>';
-  }
+  html += '</div>'; // plan-all-stops
 
   container.innerHTML = html;
   setupClusterDragDrop(container);
