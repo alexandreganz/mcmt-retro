@@ -330,45 +330,6 @@
   /* ── Full-width single column ── */
   .island-col-wrapper {
     width: 100%;
-    animation: islandSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .island-col-wrapper.anim-fruits { animation-name: islandBounceIn; }
-  .island-col-wrapper.anim-claire { animation-name: islandSwingIn; }
-  .island-col-wrapper.anim-gold { animation-name: islandFlipIn; }
-  .island-col-wrapper.anim-pirates { animation-name: islandShakeIn; }
-  .island-col-wrapper.anim-bottle { animation-name: islandWaveIn; }
-
-  @keyframes islandSlideIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  @keyframes islandBounceIn {
-    0% { opacity: 0; transform: translateY(40px) scale(0.9); }
-    60% { opacity: 1; transform: translateY(-8px) scale(1.02); }
-    100% { transform: translateY(0) scale(1); }
-  }
-  @keyframes islandSwingIn {
-    0% { opacity: 0; transform: rotate(-3deg) translateX(-30px); }
-    60% { opacity: 1; transform: rotate(1deg) translateX(5px); }
-    100% { transform: rotate(0) translateX(0); }
-  }
-  @keyframes islandFlipIn {
-    0% { opacity: 0; transform: perspective(600px) rotateY(-15deg) scale(0.9); }
-    60% { opacity: 1; transform: perspective(600px) rotateY(3deg) scale(1.01); }
-    100% { transform: perspective(600px) rotateY(0) scale(1); }
-  }
-  @keyframes islandShakeIn {
-    0% { opacity: 0; transform: translateX(-20px); }
-    25% { transform: translateX(10px); }
-    50% { transform: translateX(-5px); }
-    75% { opacity: 1; transform: translateX(3px); }
-    100% { transform: translateX(0); }
-  }
-  @keyframes islandWaveIn {
-    0% { opacity: 0; transform: translateY(30px) rotate(2deg); }
-    30% { transform: translateY(-5px) rotate(-1deg); }
-    60% { transform: translateY(3px) rotate(0.5deg); }
-    100% { opacity: 1; transform: translateY(0) rotate(0); }
   }
 
   /* Emoji splash on navigation */
@@ -1908,7 +1869,7 @@ function renderBoard() {
   mapHTML += '</div>';
 
   // ── Active column (full width) ──
-  const colHTML = `<div class="island-col-wrapper anim-${c.id}">
+  const colHTML = `<div class="island-col-wrapper">
     <div class="retro-col col-${c.id}">
       <div class="col-head">
         <span class="col-emoji">${c.emoji}</span>
