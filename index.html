@@ -2259,8 +2259,12 @@ function renderNoteCard(n, draggable) {
   const dragAttr = draggable ? ' draggable="true" data-note-id="' + n.id + '"' : '';
   const dragClass = draggable ? ' pn-draggable' : '';
   const aClr = authorColor(n.author);
+  const colBg = { fruits:'var(--green-bg)', claire:'var(--blue-bg)', gold:'var(--gold-bg)', pirates:'var(--red-bg)', bottle:'var(--purple-bg)' };
+  const colBorder = { fruits:'var(--green)', claire:'var(--blue)', gold:'var(--gold)', pirates:'var(--red)', bottle:'var(--purple)' };
+  const bg = colBg[n.col] || 'var(--bg)';
+  const border = colBorder[n.col] || 'var(--border-light)';
 
-  return '<div class="pn-card' + dragClass + '"' + dragAttr + ' data-author-color style="--author-clr:' + aClr + '">' +
+  return '<div class="pn-card' + dragClass + '"' + dragAttr + ' data-author-color style="--author-clr:' + aClr + ';background:' + bg + ';border-left:3px solid ' + border + '">' +
     '<div class="pn-votes' + ((n.votes||0) === 0 ? ' pn-votes-zero' : '') + '">' +
       '<span class="pn-votes-num">' + (n.votes||0) + '</span>' +
       '<span class="pn-votes-label">votes</span>' +
